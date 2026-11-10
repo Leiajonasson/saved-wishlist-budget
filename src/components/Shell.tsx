@@ -53,7 +53,7 @@ export function BudgetRing({ left, spent, budget, ratio }: { left: number; spent
   );
 }
 
-export function ListCard({ name, image, faded }: { name: string; image?: string; faded?: boolean }) {
+export function ListCard({ name, image, faded }: { name: string; image?: string | undefined; faded?: boolean }) {
   return (
     <div className="flex h-full flex-col rounded-xl border-2 border-primary/80 bg-card p-2 shadow-md">
       <p className="pb-2 text-center text-sm font-semibold">{name}</p>

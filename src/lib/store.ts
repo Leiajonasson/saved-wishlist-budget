@@ -10,19 +10,19 @@ export type Item = {
   name: string;
   brand: string;
   url: string;
-  image?: string;
+  image?: string | undefined;
   price: number;
-  originalPrice?: number;
+  originalPrice?: number | undefined;
   offers: Offer[];
   bought: boolean;
-  boughtMonth?: string; // YYYY-MM
+  boughtMonth?: string | undefined; // YYYY-MM
 };
 export type WishList = {
   id: string;
   name: string;
   category: string;
   date: string;
-  image?: string;
+  image?: string | undefined;
   archived: boolean;
   shared: string[];
   items: Item[];
@@ -37,7 +37,7 @@ export const MONTHS = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", "J
 
 export const monthKey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 export const monthLabel = (key: string) => {
-  const [y, m] = key.split("-").map(Number);
+  const [y = 0, m = 1] = key.split("-").map(Number);
   return `${MONTHS[m - 1]} ${y}`;
 };
 
@@ -114,7 +114,7 @@ export function useStore() {
 function titleFromUrl(url: string) {
   try {
     const u = new URL(url);
-    const host = u.hostname.replace(/^www\./, "").split(".")[0];
+    const host = u.hostname.replace(/^www\./, "").split(".")[0] ?? "";
     const slug = u.pathname.split("/").filter(Boolean).pop() ?? "produkt";
     const name = slug.replace(/\.[a-z]+$/, "").replace(/[-_]+/g, " ").replace(/\d{4,}/g, "").trim() || "Produkt";
     return { brand: host.charAt(0).toUpperCase() + host.slice(1), name: name.charAt(0).toUpperCase() + name.slice(1) };
