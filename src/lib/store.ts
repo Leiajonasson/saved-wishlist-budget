@@ -130,7 +130,7 @@ export const actions = {
     set((s) => ({ ...s, lists: [...s.lists, { ...l, id, archived: false, items: [] }] }));
     return id;
   },
-  updateList: (id: string, patch: Partial<Pick<WishList, "name" | "category" | "date">>) =>
+  updateList: (id: string, patch: Partial<Pick<WishList, "name" | "category" | "date" | "image">>) =>
     set((s) => ({ ...s, lists: s.lists.map((l) => (l.id === id ? { ...l, ...patch } : l)) })),
   toggleArchive: (id: string) => set((s) => ({ ...s, lists: s.lists.map((l) => (l.id === id ? { ...l, archived: !l.archived } : l)) })),
   share: (id: string, who: string) => set((s) => ({ ...s, lists: s.lists.map((l) => (l.id === id ? { ...l, shared: [...l.shared, who] } : l)) })),
