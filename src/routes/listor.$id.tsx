@@ -125,11 +125,19 @@ function ItemCard({ item, onOpen }: { item: Item; onOpen: () => void }) {
   const drop = item.originalPrice && item.originalPrice > item.price;
   return (
     <button onClick={onOpen} className="relative flex aspect-[3/3.6] flex-col rounded-lg border border-primary/70 bg-card p-2 text-left shadow-md">
-      <div className={`relative flex-1 overflow-hidden rounded bg-muted ${item.bought ? "opacity-40" : ""}`}>
-        {item.image ? <img src={item.image} alt={item.name} className="h-full w-full object-cover" /> :
-          <span className="grid h-full place-items-center font-serif text-2xl text-muted-foreground">{item.brand}</span>}
+      <div className="relative flex-1 overflow-hidden rounded bg-muted">
+        <div className={`h-full w-full ${item.bought ? "opacity-40" : ""}`}>
+          {item.image ? <img src={item.image} alt={item.name} className="h-full w-full object-cover" /> :
+            <span className="grid h-full place-items-center font-serif text-2xl text-muted-foreground">{item.brand}</span>}
+        </div>
         {drop && <span className="absolute top-1 left-1 rounded bg-primary px-1.5 py-0.5 text-[10px] font-semibold text-primary-foreground">Prissänkt</span>}
-        {item.bought && <span className="absolute inset-0 grid place-items-center"><Check className="h-10 w-10 text-primary" /></span>}
+        {item.bought && (
+          <span className="absolute inset-0 grid place-items-center">
+            <span className="grid h-14 w-14 place-items-center rounded-xl bg-card shadow-xl ring-1 ring-primary/25">
+              <Check className="h-8 w-8 text-primary" strokeWidth={3} />
+            </span>
+          </span>
+        )}
       </div>
       <div className="mt-2 flex justify-between text-xs font-semibold"><span className="truncate">{item.name}</span><span>{item.price}kr</span></div>
     </button>
