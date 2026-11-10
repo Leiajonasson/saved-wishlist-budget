@@ -30,6 +30,14 @@ function ListPage() {
   const [eName, setEName] = useState("");
   const [eCat, setECat] = useState("");
   const [eDate, setEDate] = useState("");
+  const [eImage, setEImage] = useState<string>();
+
+  const onFileEdit = (f?: File) => {
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = () => setEImage(String(r.result));
+    r.readAsDataURL(f);
+  };
 
   if (!list) return <Shell><p className="text-center">Listan hittades inte. <Link to="/listor" className="underline">Till listor</Link></p></Shell>;
   const item = list.items.find((i) => i.id === openItem);
@@ -39,7 +47,7 @@ function ListPage() {
       <div className="mx-2 rounded-xl border border-primary/70 bg-card p-5">
         <div className="relative">
           <h1 className="px-10 text-center font-serif text-3xl">{list.name}</h1>
-          <button aria-label="Redigera önskelista" onClick={() => { setEName(list.name); setECat(list.category); setEDate(list.date); setEditing(true); }}
+          <button aria-label="Redigera önskelista" onClick={() => { setEName(list.name); setECat(list.category); setEDate(list.date); setEImage(list.image); setEditing(true); }}
             className="absolute top-0 right-0 grid h-9 w-9 place-items-center rounded-full bg-chip"><Pencil className="h-4 w-4" /></button>
         </div>
         <div className="mt-4 flex items-center justify-between">
@@ -87,8 +95,14 @@ function ListPage() {
       )}
       {editing && (
         <Sheet onClose={() => setEditing(false)} title="Redigera önskelista">
-          <form onSubmit={(e) => { e.preventDefault(); if (!eName.trim()) return; actions.updateList(list.id, { name: eName.trim(), category: eCat, date: eDate.trim() || "Inget datum" }); setEditing(false); }}>
-            <label htmlFor="enamn" className="block font-semibold">Namn</label>
+          <form onSubmit={(e) => { e.preventDefault(); if (!eName.trim()) return; actions.updateList(list.id, { name: eName.trim(), category: eCat, date: eDate.trim() || "Inget datum", image: eImage }); setEditing(false); }}>
+            <label className="relative flex h-32 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg bg-rose font-semibold">
+              {eImage ? <img src={eImage} alt="" className="absolute inset-0 h-full w-full object-cover" /> : <>
+                <span className="grid h-7 w-7 place-items-center rounded-full bg-chip"><Plus className="h-4 w-4" /></span>Byt bild</>}
+              <input type="file" accept="image/*" className="hidden" onChange={(e) => onFileEdit(e.target.files?.[0])} />
+            </label>
+            {eImage && <button type="button" onClick={() => setEImage(undefined)} className="mt-2 text-sm underline">Ta bort bild</button>}
+            <label htmlFor="enamn" className="mt-4 block font-semibold">Namn</label>
             <input id="enamn" value={eName} onChange={(e) => setEName(e.target.value)} className="mt-2 w-full rounded-lg bg-field px-3 py-3" />
             <label htmlFor="edatum" className="mt-4 block font-semibold">Datum</label>
             <input id="edatum" value={eDate} onChange={(e) => setEDate(e.target.value)} placeholder="t.ex. 24 December" className="mt-2 w-full rounded-lg bg-field px-3 py-3" />
