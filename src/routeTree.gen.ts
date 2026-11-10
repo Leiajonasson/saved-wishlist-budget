@@ -10,33 +10,141 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BudgetRouteImport } from './routes/budget'
+import { Route as ProfilRouteImport } from './routes/profil'
+import { Route as ArkivIndexRouteImport } from './routes/arkiv.index'
+import { Route as ArkivBudgetsRouteImport } from './routes/arkiv.budgets'
+import { Route as ListorIndexRouteImport } from './routes/listor.index'
+import { Route as ListorIdRouteImport } from './routes/listor.$id'
+import { Route as ListorArkivRouteImport } from './routes/listor.arkiv'
+import { Route as ListorNyRouteImport } from './routes/listor.ny'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BudgetRoute = BudgetRouteImport.update({
+  id: '/budget',
+  path: '/budget',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfilRoute = ProfilRouteImport.update({
+  id: '/profil',
+  path: '/profil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArkivIndexRoute = ArkivIndexRouteImport.update({
+  id: '/arkiv/',
+  path: '/arkiv/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArkivBudgetsRoute = ArkivBudgetsRouteImport.update({
+  id: '/arkiv/budgets',
+  path: '/arkiv/budgets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListorIndexRoute = ListorIndexRouteImport.update({
+  id: '/listor/',
+  path: '/listor/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListorIdRoute = ListorIdRouteImport.update({
+  id: '/listor/$id',
+  path: '/listor/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListorArkivRoute = ListorArkivRouteImport.update({
+  id: '/listor/arkiv',
+  path: '/listor/arkiv',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListorNyRoute = ListorNyRouteImport.update({
+  id: '/listor/ny',
+  path: '/listor/ny',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/budget': typeof BudgetRoute
+  '/profil': typeof ProfilRoute
+  '/arkiv/budgets': typeof ArkivBudgetsRoute
+  '/listor/$id': typeof ListorIdRoute
+  '/listor/arkiv': typeof ListorArkivRoute
+  '/listor/ny': typeof ListorNyRoute
+  '/arkiv/': typeof ArkivIndexRoute
+  '/listor/': typeof ListorIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/budget': typeof BudgetRoute
+  '/profil': typeof ProfilRoute
+  '/arkiv/budgets': typeof ArkivBudgetsRoute
+  '/listor/$id': typeof ListorIdRoute
+  '/listor/arkiv': typeof ListorArkivRoute
+  '/listor/ny': typeof ListorNyRoute
+  '/arkiv': typeof ArkivIndexRoute
+  '/listor': typeof ListorIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/budget': typeof BudgetRoute
+  '/profil': typeof ProfilRoute
+  '/arkiv/budgets': typeof ArkivBudgetsRoute
+  '/listor/$id': typeof ListorIdRoute
+  '/listor/arkiv': typeof ListorArkivRoute
+  '/listor/ny': typeof ListorNyRoute
+  '/arkiv/': typeof ArkivIndexRoute
+  '/listor/': typeof ListorIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/budget'
+    | '/profil'
+    | '/arkiv/budgets'
+    | '/listor/$id'
+    | '/listor/arkiv'
+    | '/listor/ny'
+    | '/arkiv/'
+    | '/listor/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/budget'
+    | '/profil'
+    | '/arkiv/budgets'
+    | '/listor/$id'
+    | '/listor/arkiv'
+    | '/listor/ny'
+    | '/arkiv'
+    | '/listor'
+  id:
+    | '__root__'
+    | '/'
+    | '/budget'
+    | '/profil'
+    | '/arkiv/budgets'
+    | '/listor/$id'
+    | '/listor/arkiv'
+    | '/listor/ny'
+    | '/arkiv/'
+    | '/listor/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BudgetRoute: typeof BudgetRoute
+  ProfilRoute: typeof ProfilRoute
+  ArkivBudgetsRoute: typeof ArkivBudgetsRoute
+  ListorIdRoute: typeof ListorIdRoute
+  ListorArkivRoute: typeof ListorArkivRoute
+  ListorNyRoute: typeof ListorNyRoute
+  ArkivIndexRoute: typeof ArkivIndexRoute
+  ListorIndexRoute: typeof ListorIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +156,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/budget': {
+      id: '/budget'
+      path: '/budget'
+      fullPath: '/budget'
+      preLoaderRoute: typeof BudgetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profil': {
+      id: '/profil'
+      path: '/profil'
+      fullPath: '/profil'
+      preLoaderRoute: typeof ProfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/arkiv/': {
+      id: '/arkiv/'
+      path: '/arkiv'
+      fullPath: '/arkiv/'
+      preLoaderRoute: typeof ArkivIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/arkiv/budgets': {
+      id: '/arkiv/budgets'
+      path: '/arkiv/budgets'
+      fullPath: '/arkiv/budgets'
+      preLoaderRoute: typeof ArkivBudgetsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/listor/': {
+      id: '/listor/'
+      path: '/listor'
+      fullPath: '/listor/'
+      preLoaderRoute: typeof ListorIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/listor/$id': {
+      id: '/listor/$id'
+      path: '/listor/$id'
+      fullPath: '/listor/$id'
+      preLoaderRoute: typeof ListorIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/listor/arkiv': {
+      id: '/listor/arkiv'
+      path: '/listor/arkiv'
+      fullPath: '/listor/arkiv'
+      preLoaderRoute: typeof ListorArkivRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/listor/ny': {
+      id: '/listor/ny'
+      path: '/listor/ny'
+      fullPath: '/listor/ny'
+      preLoaderRoute: typeof ListorNyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BudgetRoute: BudgetRoute,
+  ProfilRoute: ProfilRoute,
+  ArkivBudgetsRoute: ArkivBudgetsRoute,
+  ListorIdRoute: ListorIdRoute,
+  ListorArkivRoute: ListorArkivRoute,
+  ListorNyRoute: ListorNyRoute,
+  ArkivIndexRoute: ArkivIndexRoute,
+  ListorIndexRoute: ListorIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
