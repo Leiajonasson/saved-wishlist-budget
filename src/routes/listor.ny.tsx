@@ -19,7 +19,7 @@ export const Route = createFileRoute("/listor/ny")({
 function NewList() {
   const nav = useNavigate();
   const [name, setName] = useState("");
-  const [cat, setCat] = useState(CATEGORIES[0]);
+  const [cat, setCat] = useState<string>(CATEGORIES[0] ?? "Min önskelista");
   const [date, setDate] = useState("");
   const [image, setImage] = useState<string>();
   const [invite, setInvite] = useState("");
