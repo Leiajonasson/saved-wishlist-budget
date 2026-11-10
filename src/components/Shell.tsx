@@ -35,7 +35,7 @@ export function Shell({ children, back = true, title }: { children: ReactNode; b
 }
 
 export function BudgetRing({ left, spent, budget, ratio }: { left: number; spent: number; budget: number; ratio: number }) {
-  const r = 78, c = 2 * Math.PI * r;
+  const r = 92, c = 2 * Math.PI * r;
   return (
     <div className="relative mx-auto h-64 w-64">
       <svg viewBox="0 0 200 200" className="absolute inset-0 h-full w-full -rotate-90">
@@ -43,7 +43,7 @@ export function BudgetRing({ left, spent, budget, ratio }: { left: number; spent
         <circle cx="100" cy="100" r={r} fill="none" stroke="var(--color-card)" strokeWidth="8" strokeLinecap="round"
           strokeDasharray={c} strokeDashoffset={c * ratio} style={{ transition: "stroke-dashoffset .6s" }} />
       </svg>
-      <div className="absolute inset-5 flex flex-col items-center justify-center rounded-full bg-primary font-serif text-primary-foreground shadow-2xl">
+      <div className="absolute inset-6 flex flex-col items-center justify-center rounded-full bg-primary font-serif text-primary-foreground shadow-2xl">
         <span className={`text-5xl ${left < 0 ? "opacity-80" : ""}`}>{left}</span>
         <span className="text-2xl">kr kvar</span>
         <span className="mt-4 text-2xl">{spent} av {budget} kr</span>
