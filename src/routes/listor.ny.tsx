@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { CalendarDays, Plus, UserPlus, X } from "lucide-react";
 import { useState } from "react";
 import { Shell } from "@/components/Shell";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { actions, CATEGORIES, MONTHS } from "@/lib/store";
 
 export const Route = createFileRoute("/listor/ny")({
@@ -20,7 +22,7 @@ function NewList() {
   const nav = useNavigate();
   const [name, setName] = useState("");
   const [cat, setCat] = useState<string>(CATEGORIES[0] ?? "Min önskelista");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState<Date>();
   const [image, setImage] = useState<string>();
   const [invite, setInvite] = useState("");
   const [shared, setShared] = useState<string[]>([]);
@@ -32,7 +34,7 @@ function NewList() {
     r.onload = () => setImage(String(r.result));
     r.readAsDataURL(f);
   };
-  const dateLabel = date ? (() => { const d = new Date(date); return `${d.getDate()} ${MONTHS[d.getMonth()]}`; })() : "";
+  const dateLabel = date ? `${date.getDate()} ${MONTHS[date.getMonth()]}` : "";
 
   return (
     <Shell back={false}>
@@ -58,10 +60,16 @@ function NewList() {
           ))}
         </div>
         <div className="mt-6 flex items-center gap-3">
-          <label className="relative flex items-center gap-3 rounded-lg bg-chip px-3 py-2 text-sm font-semibold">
-            Datum <CalendarDays className="h-5 w-5" />
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="absolute inset-0 opacity-0" />
-          </label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button type="button" className="flex items-center gap-3 rounded-lg bg-chip px-3 py-2 text-sm font-semibold">
+                Datum <CalendarDays className="h-5 w-5" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar mode="single" selected={date} onSelect={setDate} className="p-3 pointer-events-auto" />
+            </PopoverContent>
+          </Popover>
           {dateLabel && <span className="rounded-lg bg-chip px-3 py-2 text-sm font-semibold">{dateLabel}</span>}
         </div>
         <button type="button" onClick={() => setShowInvite((v) => !v)} className="mt-6 flex items-center gap-3 rounded-lg bg-rose px-3 py-2 text-sm font-semibold">
@@ -75,7 +83,7 @@ function NewList() {
           </div>
         )}
         {shared.length > 0 && <p className="mt-2 text-sm text-muted-foreground">Inbjudna: {shared.join(", ")}</p>}
-        <button className="mt-8 w-full rounded-lg bg-primary py-2.5 font-serif text-xl text-primary-foreground disabled:opacity-50" disabled={!name.trim()}>Skapa önskelista</button>
+        <button className="mt-8 w-full rounded-lg bg-primary py-2.5 font-serif text-xl text-primary-foreground shadow-md">Skapa önskelista</button>
       </form>
     </Shell>
   );
