@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Archive, ArrowUpRight, CalendarDays, Check, Plus, Search, Share2, Trash2, X } from "lucide-react";
+import { Archive, ArrowUpRight, CalendarDays, Check, Pencil, Plus, Search, Share2, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { Shell } from "@/components/Shell";
-import { actions, useStore, type Item } from "@/lib/store";
+import { actions, useStore, type Item, CATEGORIES } from "@/lib/store";
 
 export const Route = createFileRoute("/listor/$id")({
   head: () => ({
@@ -26,15 +26,22 @@ function ListPage() {
   const [openItem, setOpenItem] = useState<string | null>(null);
   const [sharing, setSharing] = useState(false);
   const [who, setWho] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [eName, setEName] = useState("");
+  const [eCat, setECat] = useState("");
+  const [eDate, setEDate] = useState("");
 
   if (!list) return <Shell><p className="text-center">Listan hittades inte. <Link to="/listor" className="underline">Till listor</Link></p></Shell>;
   const item = list.items.find((i) => i.id === openItem);
-  const total = list.items.filter((i) => !i.bought).reduce((a, i) => a + i.price, 0);
 
   return (
     <Shell>
       <div className="mx-2 rounded-xl border border-primary/70 bg-card p-5">
-        <h1 className="text-center font-serif text-3xl">{list.name}</h1>
+        <div className="relative">
+          <h1 className="px-10 text-center font-serif text-3xl">{list.name}</h1>
+          <button aria-label="Redigera önskelista" onClick={() => { setEName(list.name); setECat(list.category); setEDate(list.date); setEditing(true); }}
+            className="absolute top-0 right-0 grid h-9 w-9 place-items-center rounded-full bg-chip"><Pencil className="h-4 w-4" /></button>
+        </div>
         <div className="mt-4 flex items-center justify-between">
           <span className="flex items-center gap-2 font-semibold"><CalendarDays className="h-5 w-5" />{list.date}</span>
           <span className="rounded-lg bg-foreground px-2 py-1 text-sm font-semibold text-background">{list.category}</span>
@@ -43,7 +50,6 @@ function ListPage() {
           {list.image && <img src={list.image} alt={list.name} className="h-full w-full object-cover" />}
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
-          <span className="font-semibold">Kvar att köpa: {total} kr</span>
           <button onClick={() => setSharing((v) => !v)} className="ml-auto flex items-center gap-1 rounded-lg bg-chip px-2 py-1 font-semibold"><Share2 className="h-4 w-4" />Dela</button>
           <button onClick={() => actions.toggleArchive(list.id)} className="flex items-center gap-1 rounded-lg bg-chip px-2 py-1 font-semibold">
             <Archive className="h-4 w-4" />{list.archived ? "Återställ" : "Arkivera"}</button>
@@ -75,6 +81,23 @@ function ListPage() {
             </label>
             {err && <p className="mt-2 text-sm text-destructive">{err}</p>}
             <button className="mt-8 w-full rounded-lg bg-primary py-2 font-serif text-xl text-primary-foreground">Lägg till</button>
+          </form>
+        </Sheet>
+      )}
+      {editing && (
+        <Sheet onClose={() => setEditing(false)} title="Redigera önskelista">
+          <form onSubmit={(e) => { e.preventDefault(); if (!eName.trim()) return; actions.updateList(list.id, { name: eName.trim(), category: eCat, date: eDate.trim() || "Inget datum" }); setEditing(false); }}>
+            <label htmlFor="enamn" className="block font-semibold">Namn</label>
+            <input id="enamn" value={eName} onChange={(e) => setEName(e.target.value)} className="mt-2 w-full rounded-lg bg-field px-3 py-3" />
+            <label htmlFor="edatum" className="mt-4 block font-semibold">Datum</label>
+            <input id="edatum" value={eDate} onChange={(e) => setEDate(e.target.value)} placeholder="t.ex. 24 December" className="mt-2 w-full rounded-lg bg-field px-3 py-3" />
+            <div className="mt-4 flex flex-wrap gap-2">
+              {CATEGORIES.map((c) => (
+                <button type="button" key={c} onClick={() => setECat(c)}
+                  className={`rounded-full px-3 py-1.5 text-sm font-semibold ${eCat === c ? "bg-primary text-primary-foreground" : "bg-chip"}`}>{c}</button>
+              ))}
+            </div>
+            <button className="mt-8 w-full rounded-lg bg-primary py-2 font-serif text-xl text-primary-foreground">Spara</button>
           </form>
         </Sheet>
       )}
