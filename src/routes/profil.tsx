@@ -130,7 +130,7 @@ function Profile() {
           })}
           <div className="flex items-center justify-between gap-4 py-3">
             <div><p>Valuta</p><p className="text-xs text-muted-foreground">Visas på priser och budget</p></div>
-            <select value={p.currency} onChange={(e) => save({ ...p, currency: e.target.value })}
+            <select aria-label="Valuta" value={p.currency} onChange={(e) => save({ ...p, currency: e.target.value })}
               className="h-9 w-24 appearance-none rounded-full border border-primary bg-card bg-[length:12px] bg-[right_0.75rem_center] bg-no-repeat pl-4 pr-8 text-sm" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235C1D24' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\")" }}>
               <option>SEK</option><option>EUR</option><option>NOK</option><option>DKK</option>
             </select>
