@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
 import { Shell } from "@/components/Shell";
-import { budgetSummary, monthKey, monthLabel, useStore } from "@/lib/store";
+import { monthKey, monthLabel, useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/arkiv/budgets/")({
   head: () => ({
