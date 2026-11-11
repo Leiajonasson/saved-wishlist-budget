@@ -100,7 +100,9 @@ function load() {
       state = {
         ...saved,
         lists: saved.lists.map((list) =>
-          list.id === "mamma" && list.image === mamma ? { ...list, image: mammasFodelsedag.url } : list,
+          list.id === "mamma" && (list.image === mamma || /\/mamma(?:-[\w-]+)?\.jpg(?:[?#].*)?$/.test(list.image ?? ""))
+            ? { ...list, image: mammasFodelsedag.url }
+            : list,
         ),
       };
     }
