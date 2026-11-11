@@ -169,3 +169,20 @@ export const actions = {
   removeItem: (listId: string, itemId: string) =>
     set((s) => ({ ...s, lists: s.lists.map((l) => (l.id === listId ? { ...l, items: l.items.filter((i) => i.id !== itemId) } : l)) })),
 };
+
+// Example purchases for past months (illustrative, deterministic per month)
+const EXAMPLES: [string, string, number][] = [
+  ["Ullkofta", "Arket", 699], ["Löparskor", "Nike", 1199], ["Doftljus", "Byredo", 450], ["Hörlurar", "Sony", 899],
+  ["Bok: Tidens väv", "Adlibris", 189], ["Krukväxt", "Plantagen", 249], ["Jeans", "Levi's", 999], ["Mascara", "Lyko", 179],
+  ["Kaffebryggare", "Moccamaster", 1490], ["Tröja", "COS", 590], ["Spel", "Webhallen", 549], ["Handduk", "Hemtex", 199],
+  ["Present till Ella", "Åhlens", 350], ["Solkräm", "Apotea", 159], ["Ryggsäck", "Fjällräven", 1095], ["Örhängen", "Pandora", 499],
+];
+export function examplePurchases(key: string) {
+  let h = 0; for (const c of key) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  const n = 2 + (h % 3), out: { id: string; brand: string; name: string; price: number; day: number }[] = [];
+  for (let i = 0; i < n; i++) {
+    const [name, brand, price] = EXAMPLES[(h + i * 5) % EXAMPLES.length]!;
+    out.push({ id: `${key}-${i}`, brand, name, price, day: 1 + ((h >> (i + 2)) % 28) });
+  }
+  return out.sort((a, b) => a.day - b.day);
+}
