@@ -76,7 +76,7 @@ function seed(): State {
         items: [mk("Svarta Jeans", "Weekday", 399, jeans, false, 499), mk("Tröja", "Arket", 199), mk("Ullkappa", "COS", 1050, undefined, true)] },
       { id: "jul", name: "Jul 2026", category: "Jul", date: "24 December", image: jul, archived: false, shared: ["Mamma"],
         items: [mk("Doftljus", "Byredo", 200, undefined, true), mk("Kashmirhalsduk", "& Other Stories", 699)] },
-      { id: "mamma", name: "Mammas födelsedag", category: "Födelsedag", date: "14 Mars", image: mamma, archived: false, shared: [], items: [] },
+      { id: "mamma", name: "Mammas födelsedag", category: "Födelsedag", date: "14 Mars", image: mammasFodelsedag.url, archived: false, shared: [], items: [] },
       { id: "resa", name: "Köpa till resan", category: "Inspiration", date: "2 Juni", image: blackfriday, archived: true, shared: [], items: [] },
       { id: "kok", name: "Köksinredning", category: "Inspiration", date: "1 Maj", image: jul, archived: true, shared: [], items: [] },
       { id: "fest", name: "50 års fest", category: "Fest", date: "12 April", image: mamma, archived: true, shared: [], items: [] },
@@ -95,7 +95,15 @@ function load() {
   hydrated = true;
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) state = JSON.parse(raw);
+    if (raw) {
+      const saved = JSON.parse(raw) as State;
+      state = {
+        ...saved,
+        lists: saved.lists.map((list) =>
+          list.id === "mamma" && list.image === mamma ? { ...list, image: mammasFodelsedag.url } : list,
+        ),
+      };
+    }
   } catch {}
 }
 function set(fn: (s: State) => State) {
