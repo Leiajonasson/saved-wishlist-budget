@@ -4,6 +4,10 @@ import jul from "@/assets/jul.jpg";
 import mamma from "@/assets/mamma.jpg";
 import mammasFodelsedag from "@/assets/mammas-fodelsedag.jpg.asset.json";
 import jeans from "@/assets/jeans.jpg";
+import resa from "@/assets/resa.jpg";
+import kok from "@/assets/kok.jpg";
+import fest from "@/assets/fest.jpg";
+const ARCHIVE_IMAGES: Record<string, string> = { resa, kok, fest };
 
 export type Offer = { store: string; price: number };
 export type Item = {
@@ -77,13 +81,13 @@ function seed(): State {
       { id: "jul", name: "Jul 2026", category: "Jul", date: "24 December", image: jul, archived: false, shared: ["Mamma"],
         items: [mk("Doftljus", "Byredo", 200, undefined, true), mk("Kashmirhalsduk", "& Other Stories", 699)] },
       { id: "mamma", name: "Mammas födelsedag", category: "Födelsedag", date: "14 Mars", image: mammasFodelsedag.url, archived: false, shared: [], items: [] },
-      { id: "resa", name: "Köpa till resan", category: "Inspiration", date: "2 Juni", image: blackfriday, archived: true, shared: [],
+      { id: "resa", name: "Köpa till resan", category: "Inspiration", date: "2 Juni", image: resa, archived: true, shared: [],
         items: [
           { ...mk("Resväska", "Samsonite", 1290, undefined, true), boughtMonth: monthKey(new Date(d.getFullYear(), d.getMonth() - 1, 1)) },
           { ...mk("Solglasögon", "Ray-Ban", 890, undefined, true), boughtMonth: monthKey(new Date(d.getFullYear(), d.getMonth() - 2, 1)) },
         ] },
-      { id: "kok", name: "Köksinredning", category: "Inspiration", date: "1 Maj", image: jul, archived: true, shared: [], items: [] },
-      { id: "fest", name: "50 års fest", category: "Fest", date: "12 April", image: mamma, archived: true, shared: [], items: [] },
+      { id: "kok", name: "Köksinredning", category: "Inspiration", date: "1 Maj", image: kok, archived: true, shared: [], items: [] },
+      { id: "fest", name: "50 års fest", category: "Fest", date: "12 April", image: fest, archived: true, shared: [], items: [] },
     ],
   };
 }
@@ -106,7 +110,9 @@ function load() {
         lists: saved.lists.map((list) =>
           list.id === "mamma" && (list.image === mamma || /\/mamma(?:-[\w-]+)?\.jpg(?:[?#].*)?$/.test(list.image ?? ""))
             ? { ...list, image: mammasFodelsedag.url }
-            : list,
+            : ARCHIVE_IMAGES[list.id] && [blackfriday, jul, mamma].includes(list.image ?? "")
+              ? { ...list, image: ARCHIVE_IMAGES[list.id] }
+              : list,
         ),
       };
     }
