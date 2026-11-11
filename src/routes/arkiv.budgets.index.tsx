@@ -3,7 +3,7 @@ import { ChevronRight } from "lucide-react";
 import { Shell } from "@/components/Shell";
 import { budgetSummary, monthKey, monthLabel, useStore } from "@/lib/store";
 
-export const Route = createFileRoute("/arkiv/budgets")({
+export const Route = createFileRoute("/arkiv/budgets/")({
   head: () => ({
     meta: [
       { title: "Arkiverade budgetar – Saved" },
@@ -23,13 +23,12 @@ function Budgets() {
       <div className="space-y-6">
         {keys.length === 0 && <p className="text-center text-muted-foreground">Inga tidigare månader ännu.</p>}
         {keys.map((k) => {
-          const b = budgetSummary(s, k);
+          
           return (
             <Link key={k} to="/arkiv/budgets/$month" params={{ month: k }} className="block w-full rounded-xl bg-rose px-4 py-8 text-left">
               <span className="flex items-center justify-between text-2xl font-semibold">
                 {monthLabel(k)} <ChevronRight className="h-7 w-7" />
               </span>
-              <span className="mt-3 block font-serif text-lg">{b.spent} av {b.budget} kr spenderat · {b.left} kr kvar</span>
             </Link>
           );
         })}

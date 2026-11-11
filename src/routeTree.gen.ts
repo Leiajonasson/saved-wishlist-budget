@@ -13,11 +13,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as BudgetRouteImport } from './routes/budget'
 import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as ArkivIndexRouteImport } from './routes/arkiv.index'
-import { Route as ArkivBudgetsRouteImport } from './routes/arkiv.budgets'
 import { Route as ListorIndexRouteImport } from './routes/listor.index'
 import { Route as ListorIdRouteImport } from './routes/listor.$id'
 import { Route as ListorArkivRouteImport } from './routes/listor.arkiv'
 import { Route as ListorNyRouteImport } from './routes/listor.ny'
+import { Route as ArkivBudgetsIndexRouteImport } from './routes/arkiv.budgets.index'
 import { Route as ArkivBudgetsMonthRouteImport } from './routes/arkiv.budgets.$month'
 
 const IndexRoute = IndexRouteImport.update({
@@ -40,11 +40,6 @@ const ArkivIndexRoute = ArkivIndexRouteImport.update({
   path: '/arkiv/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ArkivBudgetsRoute = ArkivBudgetsRouteImport.update({
-  id: '/arkiv/budgets',
-  path: '/arkiv/budgets',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ListorIndexRoute = ListorIndexRouteImport.update({
   id: '/listor/',
   path: '/listor/',
@@ -65,48 +60,53 @@ const ListorNyRoute = ListorNyRouteImport.update({
   path: '/listor/ny',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArkivBudgetsIndexRoute = ArkivBudgetsIndexRouteImport.update({
+  id: '/arkiv/budgets/',
+  path: '/arkiv/budgets/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ArkivBudgetsMonthRoute = ArkivBudgetsMonthRouteImport.update({
-  id: '/$month',
-  path: '/$month',
-  getParentRoute: () => ArkivBudgetsRoute,
+  id: '/arkiv/budgets/$month',
+  path: '/arkiv/budgets/$month',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/budget': typeof BudgetRoute
   '/profil': typeof ProfilRoute
-  '/arkiv/budgets': typeof ArkivBudgetsRouteWithChildren
   '/listor/$id': typeof ListorIdRoute
   '/listor/arkiv': typeof ListorArkivRoute
   '/listor/ny': typeof ListorNyRoute
   '/arkiv/': typeof ArkivIndexRoute
   '/listor/': typeof ListorIndexRoute
   '/arkiv/budgets/$month': typeof ArkivBudgetsMonthRoute
+  '/arkiv/budgets/': typeof ArkivBudgetsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/budget': typeof BudgetRoute
   '/profil': typeof ProfilRoute
-  '/arkiv/budgets': typeof ArkivBudgetsRouteWithChildren
   '/listor/$id': typeof ListorIdRoute
   '/listor/arkiv': typeof ListorArkivRoute
   '/listor/ny': typeof ListorNyRoute
   '/arkiv': typeof ArkivIndexRoute
   '/listor': typeof ListorIndexRoute
   '/arkiv/budgets/$month': typeof ArkivBudgetsMonthRoute
+  '/arkiv/budgets': typeof ArkivBudgetsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/budget': typeof BudgetRoute
   '/profil': typeof ProfilRoute
-  '/arkiv/budgets': typeof ArkivBudgetsRouteWithChildren
   '/listor/$id': typeof ListorIdRoute
   '/listor/arkiv': typeof ListorArkivRoute
   '/listor/ny': typeof ListorNyRoute
   '/arkiv/': typeof ArkivIndexRoute
   '/listor/': typeof ListorIndexRoute
   '/arkiv/budgets/$month': typeof ArkivBudgetsMonthRoute
+  '/arkiv/budgets/': typeof ArkivBudgetsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -114,49 +114,50 @@ export interface FileRouteTypes {
     | '/'
     | '/budget'
     | '/profil'
-    | '/arkiv/budgets'
     | '/listor/$id'
     | '/listor/arkiv'
     | '/listor/ny'
     | '/arkiv/'
     | '/listor/'
     | '/arkiv/budgets/$month'
+    | '/arkiv/budgets/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/budget'
     | '/profil'
-    | '/arkiv/budgets'
     | '/listor/$id'
     | '/listor/arkiv'
     | '/listor/ny'
     | '/arkiv'
     | '/listor'
     | '/arkiv/budgets/$month'
+    | '/arkiv/budgets'
   id:
     | '__root__'
     | '/'
     | '/budget'
     | '/profil'
-    | '/arkiv/budgets'
     | '/listor/$id'
     | '/listor/arkiv'
     | '/listor/ny'
     | '/arkiv/'
     | '/listor/'
     | '/arkiv/budgets/$month'
+    | '/arkiv/budgets/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BudgetRoute: typeof BudgetRoute
   ProfilRoute: typeof ProfilRoute
-  ArkivBudgetsRoute: typeof ArkivBudgetsRouteWithChildren
   ListorIdRoute: typeof ListorIdRoute
   ListorArkivRoute: typeof ListorArkivRoute
   ListorNyRoute: typeof ListorNyRoute
   ArkivIndexRoute: typeof ArkivIndexRoute
   ListorIndexRoute: typeof ListorIndexRoute
+  ArkivBudgetsMonthRoute: typeof ArkivBudgetsMonthRoute
+  ArkivBudgetsIndexRoute: typeof ArkivBudgetsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -189,13 +190,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArkivIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/arkiv/budgets': {
-      id: '/arkiv/budgets'
-      path: '/arkiv/budgets'
-      fullPath: '/arkiv/budgets'
-      preLoaderRoute: typeof ArkivBudgetsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/listor/': {
       id: '/listor/'
       path: '/listor'
@@ -224,38 +218,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ListorNyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/arkiv/budgets/': {
+      id: '/arkiv/budgets/'
+      path: '/arkiv/budgets'
+      fullPath: '/arkiv/budgets/'
+      preLoaderRoute: typeof ArkivBudgetsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/arkiv/budgets/$month': {
       id: '/arkiv/budgets/$month'
-      path: '/$month'
+      path: '/arkiv/budgets/$month'
       fullPath: '/arkiv/budgets/$month'
       preLoaderRoute: typeof ArkivBudgetsMonthRouteImport
-      parentRoute: typeof ArkivBudgetsRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
-
-interface ArkivBudgetsRouteChildren {
-  ArkivBudgetsMonthRoute: typeof ArkivBudgetsMonthRoute
-}
-
-const ArkivBudgetsRouteChildren: ArkivBudgetsRouteChildren = {
-  ArkivBudgetsMonthRoute: ArkivBudgetsMonthRoute,
-}
-
-const ArkivBudgetsRouteWithChildren = ArkivBudgetsRoute._addFileChildren(
-  ArkivBudgetsRouteChildren,
-)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BudgetRoute: BudgetRoute,
   ProfilRoute: ProfilRoute,
-  ArkivBudgetsRoute: ArkivBudgetsRouteWithChildren,
   ListorIdRoute: ListorIdRoute,
   ListorArkivRoute: ListorArkivRoute,
   ListorNyRoute: ListorNyRoute,
   ArkivIndexRoute: ArkivIndexRoute,
   ListorIndexRoute: ListorIndexRoute,
+  ArkivBudgetsMonthRoute: ArkivBudgetsMonthRoute,
+  ArkivBudgetsIndexRoute: ArkivBudgetsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
