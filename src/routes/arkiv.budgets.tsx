@@ -1,6 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
-import { useState } from "react";
 import { Shell } from "@/components/Shell";
 import { budgetSummary, monthKey, monthLabel, useStore } from "@/lib/store";
 
@@ -18,7 +17,6 @@ export const Route = createFileRoute("/arkiv/budgets")({
 
 function Budgets() {
   const s = useStore();
-  const [open, setOpen] = useState<string | null>(null);
   const keys = Object.keys(s.budgets).filter((k) => k < monthKey()).sort().reverse();
   return (
     <Shell title="Arkiverade budgets">
@@ -27,12 +25,12 @@ function Budgets() {
         {keys.map((k) => {
           const b = budgetSummary(s, k);
           return (
-            <button key={k} onClick={() => setOpen(open === k ? null : k)} className="block w-full rounded-xl bg-rose px-4 py-8 text-left">
+            <Link key={k} to="/arkiv/budgets/$month" params={{ month: k }} className="block w-full rounded-xl bg-rose px-4 py-8 text-left">
               <span className="flex items-center justify-between text-2xl font-semibold">
-                {monthLabel(k)} <ChevronRight className={`h-7 w-7 transition ${open === k ? "rotate-90" : ""}`} />
+                {monthLabel(k)} <ChevronRight className="h-7 w-7" />
               </span>
-              {open === k && <span className="mt-3 block font-serif text-lg">{b.spent} av {b.budget} kr spenderat · {b.left} kr kvar</span>}
-            </button>
+              <span className="mt-3 block font-serif text-lg">{b.spent} av {b.budget} kr spenderat · {b.left} kr kvar</span>
+            </Link>
           );
         })}
       </div>
