@@ -61,7 +61,7 @@ function Profile() {
       <span className="text-sm text-muted-foreground">{label}</span>
       <input type={type} value={draft[k] as string}
         onChange={(e) => setDraft({ ...draft, [k]: e.target.value })}
-        className="mt-1 w-full rounded-lg border border-primary/40 bg-card px-3 py-2" />
+        className="mt-1 w-full rounded-lg border border-primary bg-card px-3 py-2" />
     </label>
   );
 
@@ -75,14 +75,14 @@ function Profile() {
 
       <div className="mx-2 mt-4 grid grid-cols-4 gap-2">
         {stats.map(([k, v]) => (
-          <div key={k} className="rounded-xl border border-primary/40 bg-card p-2 text-center">
+          <div key={k} className="rounded-xl border border-primary bg-card p-2 text-center">
             <p className="font-serif text-xl">{v}</p>
             <p className="text-xs text-muted-foreground">{k}</p>
           </div>
         ))}
       </div>
 
-      <section className="mx-2 mt-6 rounded-xl border border-primary/40 bg-card p-4">
+      <section className="mx-2 mt-6 rounded-xl border border-primary bg-card p-4">
         <div className="flex items-center justify-between">
           <h2 className="font-serif text-xl">Mina uppgifter</h2>
           {!edit && (
@@ -99,7 +99,7 @@ function Profile() {
             {field("address", "Adress")}
             <div className="flex gap-2 pt-1">
               <button type="submit" className="flex-1 rounded-lg bg-primary py-2 text-primary-foreground">Spara</button>
-              <button type="button" onClick={() => setEdit(false)} className="flex-1 rounded-lg border border-primary/40 py-2">Avbryt</button>
+              <button type="button" onClick={() => setEdit(false)} className="flex-1 rounded-lg border border-primary py-2">Avbryt</button>
             </div>
           </form>
         ) : (
@@ -113,7 +113,7 @@ function Profile() {
         )}
       </section>
 
-      <section className="mx-2 mt-4 mb-6 rounded-xl border border-primary/40 bg-card p-4">
+      <section className="mx-2 mt-4 mb-6 rounded-xl border border-primary bg-card p-4">
         <h2 className="font-serif text-xl">Appinställningar</h2>
         <div className="mt-2 divide-y divide-primary/15">
           {toggles.map(([k, t, d]) => {
@@ -131,7 +131,7 @@ function Profile() {
           <div className="flex items-center justify-between gap-4 py-3">
             <div><p>Valuta</p><p className="text-xs text-muted-foreground">Visas på priser och budget</p></div>
             <select value={p.currency} onChange={(e) => save({ ...p, currency: e.target.value })}
-              className="h-9 w-24 appearance-none rounded-full border border-primary/40 bg-card bg-[length:12px] bg-[right_0.75rem_center] bg-no-repeat pl-4 pr-8 text-sm" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235C1D24' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\")" }}>
+              className="h-9 w-24 appearance-none rounded-full border border-primary bg-card bg-[length:12px] bg-[right_0.75rem_center] bg-no-repeat pl-4 pr-8 text-sm" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235C1D24' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\")" }}>
               <option>SEK</option><option>EUR</option><option>NOK</option><option>DKK</option>
             </select>
           </div>
