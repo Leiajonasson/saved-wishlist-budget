@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Archive, ArrowUpRight, CalendarDays, Check, Pencil, Plus, Search, Share2, Trash2, X } from "lucide-react";
+import { Archive, ArrowUpRight, CalendarDays, Check, Pencil, Plus, Search, Share, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { Shell } from "@/components/Shell";
 import { actions, useStore, type Item, CATEGORIES, budgetSummary, monthKey } from "@/lib/store";
@@ -61,7 +61,7 @@ function ListPage() {
           <Link to="/budget" className="rounded-lg bg-primary px-2 py-1 font-semibold text-primary-foreground transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
             Kvar av budget: {budgetSummary(s, monthKey()).left} kr
           </Link>
-          <button onClick={() => setSharing((v) => !v)} className="ml-auto flex items-center gap-1 rounded-lg bg-chip px-2 py-1 font-semibold"><Share2 className="h-4 w-4" />Dela</button>
+          <button onClick={() => setSharing((v) => !v)} className="ml-auto flex items-center gap-1 rounded-lg bg-chip px-2 py-1 font-semibold"><Share className="h-4 w-4" />Dela</button>
           <button onClick={() => actions.toggleArchive(list.id)} className="flex items-center gap-1 rounded-lg bg-chip px-2 py-1 font-semibold">
             <Archive className="h-4 w-4" />{list.archived ? "Återställ" : "Arkivera"}</button>
         </div>
