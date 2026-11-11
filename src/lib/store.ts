@@ -77,7 +77,11 @@ function seed(): State {
       { id: "jul", name: "Jul 2026", category: "Jul", date: "24 December", image: jul, archived: false, shared: ["Mamma"],
         items: [mk("Doftljus", "Byredo", 200, undefined, true), mk("Kashmirhalsduk", "& Other Stories", 699)] },
       { id: "mamma", name: "Mammas födelsedag", category: "Födelsedag", date: "14 Mars", image: mammasFodelsedag.url, archived: false, shared: [], items: [] },
-      { id: "resa", name: "Köpa till resan", category: "Inspiration", date: "2 Juni", image: blackfriday, archived: true, shared: [], items: [] },
+      { id: "resa", name: "Köpa till resan", category: "Inspiration", date: "2 Juni", image: blackfriday, archived: true, shared: [],
+        items: [
+          { ...mk("Resväska", "Samsonite", 1290, undefined, true), boughtMonth: monthKey(new Date(d.getFullYear(), d.getMonth() - 1, 1)) },
+          { ...mk("Solglasögon", "Ray-Ban", 890, undefined, true), boughtMonth: monthKey(new Date(d.getFullYear(), d.getMonth() - 2, 1)) },
+        ] },
       { id: "kok", name: "Köksinredning", category: "Inspiration", date: "1 Maj", image: jul, archived: true, shared: [], items: [] },
       { id: "fest", name: "50 års fest", category: "Fest", date: "12 April", image: mamma, archived: true, shared: [], items: [] },
     ],
