@@ -3,7 +3,7 @@ import { Archive, ArrowUpRight, CalendarDays, Check, Pencil, Plus, Search, Share
 import { useState } from "react";
 import { Shell } from "@/components/Shell";
 import { ThemePicker } from "@/components/ThemePicker";
-import { actions, useStore, type Item, budgetSummary, monthKey } from "@/lib/store";
+import { actions, useStore, type Item, CATEGORIES, budgetSummary, monthKey } from "@/lib/store";
 
 export const Route = createFileRoute("/listor/$id")({
   head: () => ({
