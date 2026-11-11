@@ -58,7 +58,9 @@ function ListPage() {
           {list.image && <img src={list.image} alt={list.name} className="h-full w-full object-cover object-center" />}
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
-          <span className="rounded-lg bg-primary px-2 py-1 font-semibold text-primary-foreground">Kvar av budget: {budgetSummary(s, monthKey()).left} kr</span>
+          <Link to="/budget" className="rounded-lg bg-primary px-2 py-1 font-semibold text-primary-foreground transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+            Kvar av budget: {budgetSummary(s, monthKey()).left} kr
+          </Link>
           <button onClick={() => setSharing((v) => !v)} className="ml-auto flex items-center gap-1 rounded-lg bg-chip px-2 py-1 font-semibold"><Share2 className="h-4 w-4" />Dela</button>
           <button onClick={() => actions.toggleArchive(list.id)} className="flex items-center gap-1 rounded-lg bg-chip px-2 py-1 font-semibold">
             <Archive className="h-4 w-4" />{list.archived ? "Återställ" : "Arkivera"}</button>
