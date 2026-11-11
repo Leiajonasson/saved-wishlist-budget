@@ -4,10 +4,23 @@ import jul from "@/assets/jul.jpg";
 import mamma from "@/assets/mamma.jpg";
 import mammasFodelsedag from "@/assets/mammas-fodelsedag.jpg.asset.json";
 import jeans from "@/assets/jeans.jpg";
-import resa from "@/assets/resa.jpg";
-import kok from "@/assets/kok.jpg";
-import fest from "@/assets/fest.jpg";
+import resaA from "@/assets/resa-omslag.jpg.asset.json";
+import kokA from "@/assets/kok-omslag.jpg.asset.json";
+import festA from "@/assets/fest-omslag.jpg.asset.json";
+import pTroja from "@/assets/p-troja.jpg";
+import pKappa from "@/assets/p-kappa.jpg";
+import pLjus from "@/assets/p-ljus.jpg";
+import pHalsduk from "@/assets/p-halsduk.jpg";
+import pParfym from "@/assets/p-parfym.jpg";
+import pVas from "@/assets/p-vas.jpg";
+import pResvaska from "@/assets/p-resvaska.jpg";
+import pSolglas from "@/assets/p-solglas.jpg";
+import pSkalar from "@/assets/p-skalar.jpg";
+import pKaffe from "@/assets/p-kaffe.jpg";
+import pGlas from "@/assets/p-glas.jpg";
+const resa = resaA.url, kok = kokA.url, fest = festA.url;
 const ARCHIVE_IMAGES: Record<string, string> = { resa, kok, fest };
+const SEED_VERSION = 2;
 
 export type Offer = { store: string; price: number };
 export type Item = {
@@ -33,6 +46,7 @@ export type WishList = {
   items: Item[];
 };
 export type State = {
+  seedVersion?: number | undefined;
   budgets: Record<string, number>; // YYYY-MM -> amount
   lists: WishList[];
 };
@@ -75,19 +89,20 @@ function seed(): State {
   });
   return {
     budgets,
+    seedVersion: SEED_VERSION,
     lists: [
       { id: "black-friday", name: "Black Friday köp", category: "Black Friday", date: "27 November", image: blackfriday, archived: false, shared: [],
-        items: [mk("Svarta Jeans", "Weekday", 399, jeans, false, 499), mk("Tröja", "Arket", 199), mk("Ullkappa", "COS", 1050, undefined, true)] },
+        items: [mk("Svarta Jeans", "Weekday", 399, jeans, false, 499), mk("Stickad tröja", "Arket", 199, pTroja, false, 349), mk("Ullkappa", "COS", 1050, pKappa, true, 1500), mk("Hörlurar", "Sony", 899, undefined, false, 1290)] },
       { id: "jul", name: "Jul 2026", category: "Jul", date: "24 December", image: jul, archived: false, shared: ["Mamma"],
-        items: [mk("Doftljus", "Byredo", 200, undefined, true), mk("Kashmirhalsduk", "& Other Stories", 699)] },
-      { id: "mamma", name: "Mammas födelsedag", category: "Födelsedag", date: "14 Mars", image: mammasFodelsedag.url, archived: false, shared: [], items: [] },
+        items: [mk("Doftljus", "Lumière", 200, pLjus, true), mk("Kashmirhalsduk", "& Other Stories", 699, pHalsduk), mk("Champagneglas", "Orrefors", 595, pGlas)] },
+      { id: "mamma", name: "Mammas födelsedag", category: "Födelsedag", date: "14 Mars", image: mammasFodelsedag.url, archived: false, shared: [], items: [mk("Parfym", "Diptyque", 1150, pParfym), mk("Keramikvas", "Granit", 299, pVas), mk("Doftljus", "Lumière", 249, pLjus)] },
       { id: "resa", name: "Köpa till resan", category: "Inspiration", date: "2 Juni", image: resa, archived: true, shared: [],
         items: [
-          { ...mk("Resväska", "Samsonite", 1290, undefined, true), boughtMonth: monthKey(new Date(d.getFullYear(), d.getMonth() - 1, 1)) },
-          { ...mk("Solglasögon", "Ray-Ban", 890, undefined, true), boughtMonth: monthKey(new Date(d.getFullYear(), d.getMonth() - 2, 1)) },
+          { ...mk("Resväska", "Samsonite", 1290, pResvaska, true), boughtMonth: monthKey(new Date(d.getFullYear(), d.getMonth() - 1, 1)) },
+          { ...mk("Solglasögon", "Ray-Ban", 890, pSolglas, true), boughtMonth: monthKey(new Date(d.getFullYear(), d.getMonth() - 2, 1)) },
         ] },
-      { id: "kok", name: "Köksinredning", category: "Inspiration", date: "1 Maj", image: kok, archived: true, shared: [], items: [] },
-      { id: "fest", name: "50 års fest", category: "Fest", date: "12 April", image: fest, archived: true, shared: [], items: [] },
+      { id: "kok", name: "Köksinredning", category: "Inspiration", date: "1 Maj", image: kok, archived: true, shared: [], items: [mk("Keramikskålar", "Designtorget", 449, pSkalar), mk("Kaffebryggare", "Moccamaster", 1490, pKaffe), mk("Keramikvas", "Granit", 299, pVas)] },
+      { id: "fest", name: "50 års fest", category: "Fest", date: "12 April", image: fest, archived: true, shared: [], items: [mk("Champagneglas", "Orrefors", 595, pGlas), mk("Doftljus", "Lumière", 200, pLjus), mk("Parfym", "Diptyque", 1150, pParfym)] },
     ],
   };
 }
@@ -104,13 +119,23 @@ function load() {
   try {
     const raw = localStorage.getItem(KEY);
     if (raw) {
-      const saved = JSON.parse(raw) as State;
+      let saved = JSON.parse(raw) as State;
+      if ((saved.seedVersion ?? 1) < SEED_VERSION) {
+        const fresh = seed();
+        saved = { ...saved, seedVersion: SEED_VERSION, lists: saved.lists.map((l) => {
+          const f = fresh.lists.find((x) => x.id === l.id);
+          if (!f) return l;
+          const own = l.items.filter((i) => !i.url.includes("example.com"));
+          const img = ARCHIVE_IMAGES[l.id] && !(l.image ?? "").startsWith("data:") ? ARCHIVE_IMAGES[l.id] : l.image;
+          return { ...l, image: img, items: [...f.items, ...own] };
+        }) };
+      }
       state = {
         ...saved,
         lists: saved.lists.map((list) =>
           list.id === "mamma" && (list.image === mamma || /\/mamma(?:-[\w-]+)?\.jpg(?:[?#].*)?$/.test(list.image ?? ""))
             ? { ...list, image: mammasFodelsedag.url }
-            : ARCHIVE_IMAGES[list.id] && [blackfriday, jul, mamma].includes(list.image ?? "")
+            : ARCHIVE_IMAGES[list.id] && false
               ? { ...list, image: ARCHIVE_IMAGES[list.id] }
               : list,
         ),
