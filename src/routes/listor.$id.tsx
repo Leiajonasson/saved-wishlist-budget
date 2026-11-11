@@ -3,7 +3,7 @@ import { Archive, ArrowUpRight, CalendarDays, Check, Pencil, Plus, Search, Share
 import { useState } from "react";
 import { Shell } from "@/components/Shell";
 import { ThemePicker } from "@/components/ThemePicker";
-import { actions, useStore, type Item, CATEGORIES, budgetSummary, monthKey } from "@/lib/store";
+import { actions, useStore, type Item, budgetSummary, monthKey } from "@/lib/store";
 
 export const Route = createFileRoute("/listor/$id")({
   head: () => ({
@@ -110,29 +110,6 @@ function ListPage() {
             <label htmlFor="edatum" className="mt-4 block font-semibold">Datum</label>
             <input id="edatum" value={eDate} onChange={(e) => setEDate(e.target.value)} placeholder="t.ex. 24 December" className="mt-2 w-full rounded-lg bg-field px-3 py-3" />
             <div className="mt-4"><ThemePicker value={eCat} onChange={setECat} /></div>
-            <button className="mt-8 w-full rounded-lg bg-primary py-2 font-serif text-xl text-primary-foreground">Lägg till</button>
-          </form>
-        </Sheet>
-      )}
-      {editing && (
-        <Sheet onClose={() => setEditing(false)} title="Redigera önskelista">
-          <form onSubmit={(e) => { e.preventDefault(); if (!eName.trim()) return; actions.updateList(list.id, { name: eName.trim(), category: eCat, date: eDate.trim() || "Inget datum", image: eImage }); setEditing(false); }}>
-            <label className="relative flex h-32 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg bg-rose font-semibold">
-              {eImage ? <img src={eImage} alt="" className="absolute inset-0 h-full w-full object-cover" /> : <>
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-chip"><Plus className="h-4 w-4" /></span>Byt bild</>}
-              <input type="file" accept="image/*" className="hidden" onChange={(e) => onFileEdit(e.target.files?.[0])} />
-            </label>
-            {eImage && <button type="button" onClick={() => setEImage(undefined)} className="mt-2 text-sm underline">Ta bort bild</button>}
-            <label htmlFor="enamn" className="mt-4 block font-semibold">Namn</label>
-            <input id="enamn" value={eName} onChange={(e) => setEName(e.target.value)} className="mt-2 w-full rounded-lg bg-field px-3 py-3" />
-            <label htmlFor="edatum" className="mt-4 block font-semibold">Datum</label>
-            <input id="edatum" value={eDate} onChange={(e) => setEDate(e.target.value)} placeholder="t.ex. 24 December" className="mt-2 w-full rounded-lg bg-field px-3 py-3" />
-            <div className="mt-4 flex flex-wrap gap-2">
-              {CATEGORIES.map((c) => (
-                <button type="button" key={c} onClick={() => setECat(c)}
-                  className={`rounded-full px-3 py-1.5 text-sm font-semibold ${eCat === c ? "bg-primary text-primary-foreground" : "bg-chip"}`}>{c}</button>
-              ))}
-            </div>
             <button className="mt-8 w-full rounded-lg bg-primary py-2 font-serif text-xl text-primary-foreground">Spara</button>
           </form>
         </Sheet>
