@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Shell } from "@/components/Shell";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ThemePicker } from "@/components/ThemePicker";
 import { actions, CATEGORIES, MONTHS } from "@/lib/store";
 
 export const Route = createFileRoute("/listor/ny")({
@@ -18,8 +19,6 @@ export const Route = createFileRoute("/listor/ny")({
   component: NewList,
 });
 
-const MORE_THEMES = ["Bröllop", "Babyshower", "Student", "Inflyttning", "Resa", "Hem & inredning", "Mode", "Teknik"];
-
 function NewList() {
   const nav = useNavigate();
   const [name, setName] = useState("");
@@ -29,10 +28,6 @@ function NewList() {
   const [invite, setInvite] = useState("");
   const [shared, setShared] = useState<string[]>([]);
   const [showInvite, setShowInvite] = useState(false);
-  const [showMore, setShowMore] = useState(false);
-  const [custom, setCustom] = useState("");
-  const allThemes = [...CATEGORIES, ...MORE_THEMES];
-  const addCustom = () => { const t = custom.trim(); if (t) { setCat(t); setCustom(""); } };
 
   const onFile = (f?: File) => {
     if (!f) return;
@@ -59,23 +54,7 @@ function NewList() {
         </label>
         <label htmlFor="namn" className="mt-6 block font-semibold">Namn</label>
         <input id="namn" value={name} onChange={(e) => setName(e.target.value)} placeholder="Önskelista…" className="mt-2 w-full rounded-lg bg-field px-3 py-3" />
-        <p className="mt-5 font-semibold">Tema</p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {[...CATEGORIES, ...(showMore ? MORE_THEMES : []), ...(allThemes.includes(cat) ? [] : [cat])].map((c) => (
-            <button type="button" key={c} onClick={() => setCat(c)}
-              className={`rounded-full px-3 py-1.5 text-sm font-semibold ${cat === c ? "bg-primary text-primary-foreground" : "bg-chip"}`}>{c}</button>
-          ))}
-          <button type="button" onClick={() => setShowMore((v) => !v)} aria-expanded={showMore}
-            className="rounded-full border border-primary px-3 py-1.5 text-sm font-semibold">{showMore ? "Färre ‹" : "Fler ›"}</button>
-        </div>
-        {showMore && (
-          <div className="mt-3 flex gap-2">
-            <input value={custom} onChange={(e) => setCustom(e.target.value)} placeholder="Skriv eget tema…"
-              aria-label="Eget tema" className="flex-1 rounded-lg bg-field px-3 py-2 text-sm"
-              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addCustom(); } }} />
-            <button type="button" onClick={addCustom} className="rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground">Lägg till</button>
-          </div>
-        )}
+        <div className="mt-5"><ThemePicker value={cat} onChange={setCat} /></div>
         <div className="mt-6 flex items-center gap-3">
           <Popover>
             <PopoverTrigger asChild>

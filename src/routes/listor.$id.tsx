@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Archive, ArrowUpRight, CalendarDays, Check, Pencil, Plus, Search, Share, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { Shell } from "@/components/Shell";
-import { actions, useStore, type Item, CATEGORIES, budgetSummary, monthKey } from "@/lib/store";
+import { ThemePicker } from "@/components/ThemePicker";
+import { actions, useStore, type Item, budgetSummary, monthKey } from "@/lib/store";
 
 export const Route = createFileRoute("/listor/$id")({
   head: () => ({
@@ -108,12 +109,7 @@ function ListPage() {
             <input id="enamn" value={eName} onChange={(e) => setEName(e.target.value)} className="mt-2 w-full rounded-lg bg-field px-3 py-3" />
             <label htmlFor="edatum" className="mt-4 block font-semibold">Datum</label>
             <input id="edatum" value={eDate} onChange={(e) => setEDate(e.target.value)} placeholder="t.ex. 24 December" className="mt-2 w-full rounded-lg bg-field px-3 py-3" />
-            <div className="mt-4 flex flex-wrap gap-2">
-              {CATEGORIES.map((c) => (
-                <button type="button" key={c} onClick={() => setECat(c)}
-                  className={`rounded-full px-3 py-1.5 text-sm font-semibold ${eCat === c ? "bg-primary text-primary-foreground" : "bg-chip"}`}>{c}</button>
-              ))}
-            </div>
+            <div className="mt-4"><ThemePicker value={eCat} onChange={setECat} /></div>
             <button className="mt-8 w-full rounded-lg bg-primary py-2 font-serif text-xl text-primary-foreground">Spara</button>
           </form>
         </Sheet>
