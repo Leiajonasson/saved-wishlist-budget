@@ -55,7 +55,7 @@ function ListPage() {
           <span className="rounded-lg bg-foreground px-2 py-1 text-sm font-semibold text-background">{list.category}</span>
         </div>
         <div className="mt-4 aspect-[16/15] overflow-hidden rounded-lg border border-foreground/60 bg-muted">
-          {list.image && <img src={list.image} alt={list.name} className="h-full w-full object-cover" />}
+          {list.image && <img src={list.image} alt={list.name} className="h-full w-full object-cover object-center" />}
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
           <span className="rounded-lg bg-primary px-2 py-1 font-semibold text-primary-foreground">Kvar av budget: {budgetSummary(s, monthKey()).left} kr</span>
