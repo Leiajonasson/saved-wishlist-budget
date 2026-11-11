@@ -58,7 +58,7 @@ export function ListCard({ name, image, faded }: { name: string; image?: string 
     <div className="flex h-full flex-col rounded-xl border-2 border-primary/80 bg-card p-2 shadow-md">
       <p className="pb-2 text-center text-sm font-semibold">{name}</p>
       <div className={`aspect-[4/5] overflow-hidden rounded-lg bg-muted ${faded ? "opacity-40" : ""}`}>
-        {image && <img src={image} alt={name} loading="lazy" className="h-full w-full object-cover" />}
+        {image && <img src={image} alt={name} loading="lazy" className="h-full w-full object-cover object-center" />}
       </div>
     </div>
   );

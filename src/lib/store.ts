@@ -2,6 +2,7 @@ import { useSyncExternalStore } from "react";
 import blackfriday from "@/assets/blackfriday.jpg";
 import jul from "@/assets/jul.jpg";
 import mamma from "@/assets/mamma.jpg";
+import mammasFodelsedag from "@/assets/mammas-fodelsedag.jpg.asset.json";
 import jeans from "@/assets/jeans.jpg";
 
 export type Offer = { store: string; price: number };
