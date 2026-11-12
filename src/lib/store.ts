@@ -191,6 +191,7 @@ export const actions = {
   updateList: (id: string, patch: Partial<Pick<WishList, "name" | "category" | "date" | "image">>) =>
     set((s) => ({ ...s, lists: s.lists.map((l) => (l.id === id ? { ...l, ...patch } : l)) })),
   toggleArchive: (id: string) => set((s) => ({ ...s, lists: s.lists.map((l) => (l.id === id ? { ...l, archived: !l.archived } : l)) })),
+  removeList: (id: string) => set((s) => ({ ...s, lists: s.lists.filter((l) => l.id !== id) })),
   share: (id: string, who: string) => set((s) => ({ ...s, lists: s.lists.map((l) => (l.id === id ? { ...l, shared: [...l.shared, who] } : l)) })),
   addItemFromUrl: (listId: string, url: string): boolean => {
     const t = titleFromUrl(url);
