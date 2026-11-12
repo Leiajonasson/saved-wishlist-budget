@@ -3,7 +3,7 @@ import { Archive, ArrowUpRight, CalendarDays, Check, Pencil, Plus, Search, Share
 import { useState } from "react";
 import { Shell } from "@/components/Shell";
 import { ThemePicker } from "@/components/ThemePicker";
-import { actions, useStore, type Item, budgetSummary, monthKey } from "@/lib/store";
+import { actions, useStore, type Item, budgetSummary, monthKey, storeUrl } from "@/lib/store";
 
 export const Route = createFileRoute("/listor/$id")({
   head: () => ({
@@ -178,10 +178,14 @@ function ItemDetail({ item, listId, onClose }: { item: Item; listId: string; onC
         <h3 className="mt-6 font-semibold">Jämför priset</h3>
         <div className="mt-3 space-y-3">
           {item.offers.map((o) => (
-            <div key={o.store} className="flex items-center justify-between rounded-lg bg-chip px-3 py-2 font-serif text-lg">
-              <span>{o.store}{o === cheapest && <span className="ml-2 font-sans text-xs font-semibold text-primary">Billigast</span>}</span>
+            <a key={o.store} href={storeUrl(o.store)} target="_blank" rel="noreferrer"
+              className="flex items-center justify-between rounded-lg bg-chip px-3 py-2 font-serif text-lg transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
+              <span className="flex items-center gap-1.5">{o.store}
+                <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
+                {o === cheapest && <span className="ml-1 font-sans text-xs font-semibold text-primary">Billigast</span>}
+              </span>
               <span className="rounded-lg bg-primary px-3 py-1 text-primary-foreground">{o.price} kr</span>
-            </div>
+            </a>
           ))}
         </div>
         <div className="mt-6 flex gap-3">
