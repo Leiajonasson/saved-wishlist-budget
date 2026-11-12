@@ -18,9 +18,14 @@ import pSolglas from "@/assets/p-solglas.jpg";
 import pSkalar from "@/assets/p-skalar.jpg";
 import pKaffe from "@/assets/p-kaffe.jpg";
 import pGlas from "@/assets/p-glas.jpg";
+import inredning from "@/assets/inredning.jpg";
+import beauty from "@/assets/beauty.jpg";
+import pSmink from "@/assets/p-smink.jpg";
+import pHudvard from "@/assets/p-hudvard.jpg";
+import pHarvard from "@/assets/p-harvard.jpg";
 const resa = resaA.url, kok = kokA.url, fest = festA.url;
 const ARCHIVE_IMAGES: Record<string, string> = { resa, kok, fest };
-const SEED_VERSION = 2;
+const SEED_VERSION = 3;
 
 export type Offer = { store: string; price: number };
 export type Item = {
@@ -103,6 +108,10 @@ function seed(): State {
         ] },
       { id: "kok", name: "Köksinredning", category: "Inspiration", date: "1 Maj", image: kok, archived: true, shared: [], items: [mk("Keramikskålar", "Designtorget", 449, pSkalar), mk("Kaffebryggare", "Moccamaster", 1490, pKaffe), mk("Keramikvas", "Granit", 299, pVas)] },
       { id: "fest", name: "50 års fest", category: "Fest", date: "12 April", image: fest, archived: true, shared: [], items: [mk("Champagneglas", "Orrefors", 595, pGlas), mk("Doftljus", "Lumière", 200, pLjus), mk("Parfym", "Diptyque", 1150, pParfym)] },
+      { id: "inredning", name: "Inredning", category: "Hem & inredning", date: "15 December", image: inredning, archived: false, shared: [],
+        items: [mk("Keramikvas", "Granit", 299, pVas), mk("Doftljus", "Lumière", 249, pLjus), mk("Keramikskålar", "Designtorget", 449, pSkalar)] },
+      { id: "beauty", name: "Beauty", category: "Min önskelista", date: "20 December", image: beauty, archived: false, shared: [],
+        items: [mk("Läppstift & rouge", "Kicks", 349, pSmink), mk("C-vitaminserum", "The Ordinary", 289, pHudvard), mk("Schampo", "Pureléa", 179, pHarvard)] },
     ],
   };
 }
@@ -122,13 +131,16 @@ function load() {
       let saved = JSON.parse(raw) as State;
       if ((saved.seedVersion ?? 1) < SEED_VERSION) {
         const fresh = seed();
-        saved = { ...saved, seedVersion: SEED_VERSION, lists: saved.lists.map((l) => {
-          const f = fresh.lists.find((x) => x.id === l.id);
-          if (!f) return l;
-          const own = l.items.filter((i) => !i.url.includes("example.com"));
-          const img = ARCHIVE_IMAGES[l.id] && !(l.image ?? "").startsWith("data:") ? ARCHIVE_IMAGES[l.id] : l.image;
-          return { ...l, image: img, items: [...f.items, ...own] };
-        }) };
+        saved = { ...saved, seedVersion: SEED_VERSION, lists: [
+          ...saved.lists.map((l) => {
+            const f = fresh.lists.find((x) => x.id === l.id);
+            if (!f) return l;
+            const own = l.items.filter((i) => !i.url.includes("example.com"));
+            const img = ARCHIVE_IMAGES[l.id] && !(l.image ?? "").startsWith("data:") ? ARCHIVE_IMAGES[l.id] : l.image;
+            return { ...l, image: img, items: [...f.items, ...own] };
+          }),
+          ...fresh.lists.filter((f) => !saved.lists.some((l) => l.id === f.id)),
+        ] };
       }
       state = {
         ...saved,
