@@ -77,6 +77,13 @@ export function budgetSummary(state: State, key: string) {
 
 const uid = () => Math.random().toString(36).slice(2, 10);
 
+const STORE_URLS: Record<string, string> = {
+  Zalando: "https://www.zalando.se",
+  Boozt: "https://www.boozt.com",
+  Ellos: "https://www.ellos.se",
+};
+export const storeUrl = (store: string) => STORE_URLS[store] ?? `https://www.google.com/search?q=${encodeURIComponent(store)}`;
+
 const offersFor = (p: number): Offer[] => [
   { store: "Zalando", price: Math.round(p * 0.87) },
   { store: "Boozt", price: Math.round(p * 1.005) },
