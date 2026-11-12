@@ -23,7 +23,7 @@ function Lists() {
         {s.lists.filter((l) => !l.archived).map((l) => (
           <Link key={l.id} to="/listor/$id" params={{ id: l.id }}><ListCard name={l.name} image={l.image} /></Link>
         ))}
-        <Link to="/listor/ny" className="flex min-h-72 flex-col items-center justify-center gap-4 rounded-xl border-2 border-primary/80 bg-rose text-xl font-semibold">
+        <Link to="/listor/ny" className="flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-primary/80 bg-rose text-xl font-semibold">
           <span className="grid h-10 w-10 place-items-center rounded-full bg-chip"><Plus /></span>
           Skapa ny lista
         </Link>
