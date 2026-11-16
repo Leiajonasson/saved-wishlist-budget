@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Archive, ArrowUpRight, CalendarDays, Check, Pencil, Plus, Search, Share, Trash2, X } from "lucide-react";
 import { useState } from "react";
+import * as D from "@radix-ui/react-dialog";
 import { Shell } from "@/components/Shell";
 import { ThemePicker } from "@/components/ThemePicker";
 import { actions, useStore, type Item, budgetSummary, monthKey, storeUrl } from "@/lib/store";
@@ -69,7 +70,7 @@ function ListPage() {
         {sharing && (
           <div className="mt-3 rounded-lg bg-muted p-3 text-sm">
             <div className="flex gap-2">
-              <input value={who} onChange={(e) => setWho(e.target.value)} placeholder="Bjud in via e-post eller namn" className="flex-1 rounded-lg bg-card px-3 py-2" />
+              <input value={who} onChange={(e) => setWho(e.target.value)} aria-label="Bjud in via e-post eller namn" placeholder="Bjud in via e-post eller namn" className="flex-1 rounded-lg bg-card px-3 py-2" />
               <button onClick={() => { if (who.trim()) { actions.share(list.id, who.trim()); setWho(""); } }} className="rounded-lg bg-primary px-3 font-semibold text-primary-foreground">Bjud in</button>
             </div>
             <button onClick={() => navigator.clipboard?.writeText(window.location.href)} className="mt-2 underline">Kopiera länk</button>
@@ -87,9 +88,9 @@ function ListPage() {
       {adding && (
         <Sheet onClose={() => { setAdding(false); setErr(""); }} title="Skapa önskan">
           <form onSubmit={(e) => { e.preventDefault(); if (actions.addItemFromUrl(list.id, url.trim())) { setUrl(""); setAdding(false); setErr(""); } else setErr("Klistra in en giltig produktlänk."); }}>
-            <label className="flex items-center gap-3 rounded-lg bg-field px-4 py-4">
+            <label className="flex items-center gap-3 rounded-lg bg-field px-4 py-4 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary">
               <Search className="h-5 w-5" />
-              <input autoFocus value={url} onChange={(e) => setUrl(e.target.value)} placeholder="infoga länk..." className="flex-1 bg-transparent text-sm outline-none" />
+              <input autoFocus aria-label="Produktlänk" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="infoga länk..." className="flex-1 bg-transparent text-sm outline-none" />
             </label>
             {err && <p className="mt-2 text-sm text-destructive">{err}</p>}
             <button className="mt-8 w-full rounded-lg bg-primary py-2 font-serif text-xl text-primary-foreground">Lägg till</button>
@@ -99,10 +100,10 @@ function ListPage() {
       {editing && (
         <Sheet onClose={() => setEditing(false)} title="Redigera önskelista">
           <form onSubmit={(e) => { e.preventDefault(); if (!eName.trim()) return; actions.updateList(list.id, { name: eName.trim(), category: eCat, date: eDate.trim() || "Inget datum", image: eImage }); setEditing(false); }}>
-            <label className="relative flex h-32 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg bg-rose font-semibold">
+            <label className="relative flex h-32 cursor-pointer focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary items-center justify-center gap-2 overflow-hidden rounded-lg bg-rose font-semibold">
               {eImage ? <img src={eImage} alt="" className="absolute inset-0 h-full w-full object-cover" /> : <>
                 <span className="grid h-7 w-7 place-items-center rounded-full bg-chip"><Plus className="h-4 w-4" /></span>Byt bild</>}
-              <input type="file" accept="image/*" className="hidden" onChange={(e) => onFileEdit(e.target.files?.[0])} />
+              <input type="file" accept="image/*" aria-label="Välj bild" className="sr-only" onChange={(e) => onFileEdit(e.target.files?.[0])} />
             </label>
             {eImage && <button type="button" onClick={() => setEImage(undefined)} className="mt-2 text-sm underline">Ta bort bild</button>}
             <label htmlFor="enamn" className="mt-4 block font-semibold">Namn</label>
@@ -144,15 +145,18 @@ function ItemCard({ item, onOpen }: { item: Item; onOpen: () => void }) {
 
 function Sheet({ title, onClose, children }: { title?: string; onClose: () => void; children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-foreground/30 backdrop-blur-sm" onClick={onClose}>
-      <div className="mb-0 w-full max-w-md rounded-t-xl border border-primary/70 bg-card p-5 pb-10 animate-in slide-in-from-bottom" onClick={(e) => e.stopPropagation()}>
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="font-serif text-2xl">{title}</h2>
-          <button aria-label="Stäng" onClick={onClose} className="grid h-7 w-7 place-items-center rounded-full bg-chip"><X className="h-4 w-4" /></button>
-        </div>
-        {children}
-      </div>
-    </div>
+    <D.Root open onOpenChange={(o) => { if (!o) onClose(); }}>
+      <D.Portal>
+        <D.Overlay className="fixed inset-0 z-50 bg-foreground/30 backdrop-blur-sm" />
+        <D.Content aria-describedby={undefined} className="fixed bottom-0 left-1/2 z-50 w-full max-w-md -translate-x-1/2 rounded-t-xl border border-primary/70 bg-card p-5 pb-10 animate-in slide-in-from-bottom">
+          <div className="mb-6 flex items-center justify-between">
+            <D.Title className="font-serif text-2xl">{title ?? "Produktdetaljer"}</D.Title>
+            <D.Close aria-label="Stäng" className="grid h-7 w-7 place-items-center rounded-full bg-chip"><X className="h-4 w-4" /></D.Close>
+          </div>
+          {children}
+        </D.Content>
+      </D.Portal>
+    </D.Root>
   );
 }
 

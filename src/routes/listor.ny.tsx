@@ -47,10 +47,10 @@ function NewList() {
           <h1 className="font-serif text-2xl">Skapa önskelista</h1>
           <button type="button" aria-label="Stäng" onClick={() => nav({ to: "/listor" })} className="grid h-7 w-7 place-items-center rounded-full bg-chip"><X className="h-4 w-4" /></button>
         </div>
-        <label className="relative flex h-44 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-3xl bg-rose font-semibold">
+        <label className="relative flex h-44 cursor-pointer focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary flex-col items-center justify-center gap-2 overflow-hidden rounded-3xl bg-rose font-semibold">
           {image ? <img src={image} alt="" className="absolute inset-0 h-full w-full object-cover" /> : <>
             <span className="grid h-7 w-7 place-items-center rounded-full bg-chip"><Plus className="h-4 w-4" /></span>Lägg till bild</>}
-          <input type="file" accept="image/*" className="hidden" onChange={(e) => onFile(e.target.files?.[0])} />
+          <input type="file" accept="image/*" aria-label="Välj bild" className="sr-only" onChange={(e) => onFile(e.target.files?.[0])} />
         </label>
         <label htmlFor="namn" className="mt-6 block font-semibold">Namn</label>
         <input id="namn" value={name} onChange={(e) => setName(e.target.value)} placeholder="Önskelista…" className="mt-2 w-full rounded-lg bg-field px-3 py-3" />
@@ -73,7 +73,7 @@ function NewList() {
         </button>
         {showInvite && (
           <div className="mt-3 flex gap-2">
-            <input value={invite} onChange={(e) => setInvite(e.target.value)} placeholder="E-post eller namn" className="flex-1 rounded-lg bg-field px-3 py-2 text-sm" />
+            <input value={invite} onChange={(e) => setInvite(e.target.value)} aria-label="E-post eller namn" placeholder="E-post eller namn" className="flex-1 rounded-lg bg-field px-3 py-2 text-sm" />
             <button type="button" onClick={() => { if (invite.trim()) { setShared([...shared, invite.trim()]); setInvite(""); } }}
               className="rounded-lg bg-primary px-3 text-sm font-semibold text-primary-foreground">Bjud in</button>
           </div>
