@@ -104,8 +104,8 @@ export function realProductItem(item: Item): Item {
 }
 
 export function migrateProducts(saved: State): State {
-  if ((saved.productVersion ?? 0) >= 2) return saved;
-  return { ...saved, productVersion: 2, lists: saved.lists.map((list) => ({ ...list,
+  if ((saved.productVersion ?? 0) >= 3) return saved;
+  return { ...saved, productVersion: 3, lists: saved.lists.map((list) => ({ ...list,
     items: list.items.map((item) => {
       const key = LEGACY_PRODUCT_KEYS[item.name];
       const product = key ? PRODUCT_CATALOG[key] : undefined;
@@ -131,7 +131,7 @@ function seed(): State {
   return {
     budgets,
     seedVersion: SEED_VERSION,
-    productVersion: 2,
+    productVersion: 3,
     lists: [
       { id: "black-friday", name: "Black Friday köp", category: "Black Friday", date: "27 November", image: blackfriday, archived: false, shared: [],
         items: [mk("Svarta Jeans", "Weekday", 399, jeans, false, 499), mk("Stickad tröja", "Arket", 199, pTroja, false, 349), mk("Ullkappa", "COS", 1050, pKappa, true, 1500), mk("Hörlurar", "Sony", 899, undefined, false, 1290), mk("Yogamatta", "Gaiam", 269)] },
