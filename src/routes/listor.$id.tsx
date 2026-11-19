@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Archive, ArrowUpRight, CalendarDays, Check, Pencil, Plus, Search, Share, Trash2, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as D from "@radix-ui/react-dialog";
 import { Shell } from "@/components/Shell";
 import { ThemePicker } from "@/components/ThemePicker";
@@ -191,11 +191,10 @@ function ItemDetail({ item, listId, onClose }: { item: Item; listId: string; onC
     setSearching(true); setSearchMsg("");
     const r = await findOtherStores({ data: { name: item.name, brand: item.brand, url: item.url } }).catch(() => ({ ok: false as const, error: "Sökningen misslyckades" }));
     setSearching(false);
-    if (!r.ok) return setSearchMsg(r.error);
-    if (r.offers.length === 0) return setSearchMsg("Hittade inga andra butiker med samma produkt just nu.");
+    if (!r.ok) return setSearchMsg("");
     actions.addOffers(listId, item.id, r.offers);
-    setSearchMsg(`Hittade ${r.offers.length} ${r.offers.length === 1 ? "butik" : "butiker"}.`);
   };
+  useEffect(() => { if (!item.compared) void search(); }, [item.id]);
   return (
     <Sheet onClose={onClose}>
       <div className="-mt-4 max-h-[75vh] overflow-y-auto">
@@ -228,11 +227,7 @@ function ItemDetail({ item, listId, onClose }: { item: Item; listId: string; onC
             </a>
           ))}
         </div>
-        <button onClick={search} disabled={searching}
-          className="mt-4 w-full rounded-lg border border-primary py-2 font-semibold text-primary disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
-          {searching ? "Letar i andra butiker…" : "Hitta i andra butiker"}
-        </button>
-        <p role="status" className="mt-2 text-sm">{searchMsg}</p>
+        <p role="status" className="mt-3 text-sm text-muted-foreground">{searching ? "Letar efter samma produkt i andra butiker…" : searchMsg}</p>
         <p className="mt-2 text-xs text-muted-foreground">Aktuellt pris och lagerstatus visas i butiken.</p>
         <div className="mt-6 flex gap-3">
           <button onClick={() => actions.toggleBought(listId, item.id)} className="flex-1 rounded-lg bg-rose py-2 font-semibold">

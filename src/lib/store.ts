@@ -39,6 +39,7 @@ export type Item = {
   priceKnown?: boolean;
   originalPrice?: number | undefined;
   offers: Offer[];
+  compared?: boolean;
   bought: boolean;
   boughtMonth?: string | undefined; // YYYY-MM
 };
@@ -262,7 +263,7 @@ export const actions = {
           const base = i.offers.length || i.priceKnown === false ? i.offers : [{ store: storeNameFromUrl(i.url), price: i.price, url: i.url }];
           const merged = [...base];
           for (const o of offers) if (!merged.some((m) => m.url === o.url || m.store === o.store)) merged.push(o);
-          return { ...i, offers: merged };
+          return { ...i, offers: merged, compared: true };
         }),
       }),
     })),
