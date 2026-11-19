@@ -188,7 +188,7 @@ function ItemDetail({ item, listId, onClose }: { item: Item; listId: string; onC
     <Sheet onClose={onClose}>
       <div className="-mt-4 max-h-[75vh] overflow-y-auto">
         <div className="mx-auto aspect-[4/5] w-3/4 overflow-hidden rounded-lg border border-primary/60 bg-muted">
-          {item.image ? <img src={item.image} alt={item.name} className="h-full w-full object-cover" /> :
+          {item.image ? <img src={item.image} alt={item.name} className="h-full w-full object-contain" /> :
             <span className="grid h-full place-items-center font-serif text-3xl text-muted-foreground">{item.brand}</span>}
         </div>
         <div className="mt-5 flex flex-wrap items-baseline justify-between gap-2">
