@@ -4,26 +4,11 @@ import blackfriday from "@/assets/blackfriday.jpg";
 import jul from "@/assets/jul.jpg";
 import mamma from "@/assets/mamma.jpg";
 import mammasFodelsedag from "@/assets/mammas-fodelsedag.jpg.asset.json";
-import jeans from "@/assets/jeans.jpg";
 import resaA from "@/assets/resa-omslag.jpg.asset.json";
 import kokA from "@/assets/kok-omslag.jpg.asset.json";
 import festA from "@/assets/fest-omslag.jpg.asset.json";
-import pTroja from "@/assets/p-troja.jpg";
-import pKappa from "@/assets/p-kappa.jpg";
-import pLjus from "@/assets/p-ljus.jpg";
-import pHalsduk from "@/assets/p-halsduk.jpg";
-import pParfym from "@/assets/p-parfym.jpg";
-import pVas from "@/assets/p-vas.jpg";
-import pResvaska from "@/assets/p-resvaska.jpg";
-import pSolglas from "@/assets/p-solglas.jpg";
-import pSkalar from "@/assets/p-skalar.jpg";
-import pKaffe from "@/assets/p-kaffe.jpg";
-import pGlas from "@/assets/p-glas.jpg";
 import inredning from "@/assets/inredning.jpg";
 import beauty from "@/assets/beauty.jpg";
-import pSmink from "@/assets/p-smink.jpg";
-import pHudvard from "@/assets/p-hudvard.jpg";
-import pHarvard from "@/assets/p-harvard.jpg";
 const resa = resaA.url, kok = kokA.url, fest = festA.url;
 const ARCHIVE_IMAGES: Record<string, string> = { resa, kok, fest };
 const SEED_VERSION = 4;
@@ -136,22 +121,22 @@ function seed(): State {
     productVersion: 3,
     lists: [
       { id: "black-friday", name: "Black Friday köp", category: "Black Friday", date: "27 November", image: blackfriday, archived: false, shared: [],
-        items: [mk("Svarta Jeans", "Weekday", 399, jeans, false, 499), mk("Stickad tröja", "Arket", 199, pTroja, false, 349), mk("Ullkappa", "COS", 1050, pKappa, true, 1500), mk("Hörlurar", "Sony", 899, undefined, false, 1290), mk("Yogamatta", "Gaiam", 269)] },
+        items: [mk("Svarta Jeans", "Weekday", 399, undefined, false, 499), mk("Stickad tröja", "Arket", 199, undefined, false, 349), mk("Ullkappa", "COS", 1050, undefined, true, 1500), mk("Hörlurar", "Sony", 899, undefined, false, 1290), mk("Yogamatta", "Gaiam", 269)] },
       { id: "jul", name: "Jul 2026", category: "Jul", date: "24 December", image: jul, archived: false, shared: ["Mamma"],
-        items: [mk("Doftljus", "Lumière", 200, pLjus, true), mk("Kashmirhalsduk", "& Other Stories", 699, pHalsduk), mk("Champagneglas", "Orrefors", 595, pGlas), mk("Adventsljusstake", "Northlight", 99), mk("Pocketbok", "Liza Marklund", 89)] },
-      { id: "mamma", name: "Mammas födelsedag", category: "Födelsedag", date: "14 Mars", image: mammasFodelsedag.url, archived: false, shared: [], items: [mk("Parfym", "Diptyque", 1150, pParfym), mk("Keramikvas", "Granit", 299, pVas), mk("Doftljus", "Lumière", 249, pLjus), mk("Blomkruka", "Plantagen", 149)] },
+        items: [mk("Doftljus", "Lumière", 200, undefined, true), mk("Kashmirhalsduk", "& Other Stories", 699, undefined), mk("Champagneglas", "Orrefors", 595, undefined), mk("Adventsljusstake", "Northlight", 99), mk("Pocketbok", "Liza Marklund", 89)] },
+      { id: "mamma", name: "Mammas födelsedag", category: "Födelsedag", date: "14 Mars", image: mammasFodelsedag.url, archived: false, shared: [], items: [mk("Parfym", "Diptyque", 1150, undefined), mk("Keramikvas", "Granit", 299, undefined), mk("Doftljus", "Lumière", 249, undefined), mk("Blomkruka", "Plantagen", 149)] },
       { id: "resa", name: "Köpa till resan", category: "Inspiration", date: "2 Juni", image: resa, archived: true, shared: [],
         items: [
-          { ...mk("Resväska", "Samsonite", 1290, pResvaska, true), boughtMonth: monthKey(new Date(d.getFullYear(), d.getMonth() - 1, 1)) },
-          { ...mk("Solglasögon", "Ray-Ban", 890, pSolglas, true), boughtMonth: monthKey(new Date(d.getFullYear(), d.getMonth() - 2, 1)) },
+          { ...mk("Resväska", "Samsonite", 1290, undefined, true), boughtMonth: monthKey(new Date(d.getFullYear(), d.getMonth() - 1, 1)) },
+          { ...mk("Solglasögon", "Ray-Ban", 890, undefined, true), boughtMonth: monthKey(new Date(d.getFullYear(), d.getMonth() - 2, 1)) },
           mk("Powerbank", "Anker", 399), mk("Solkräm", "ACO", 199),
         ] },
-      { id: "kok", name: "Köksinredning", category: "Inspiration", date: "1 Maj", image: kok, archived: true, shared: [], items: [mk("Keramikskålar", "Designtorget", 449, pSkalar), mk("Kaffebryggare", "Moccamaster", 1490, pKaffe), mk("Keramikvas", "Granit", 299, pVas), mk("Airfryer", "Philips", 1499)] },
-      { id: "fest", name: "50 års fest", category: "Fest", date: "12 April", image: fest, archived: true, shared: [], items: [mk("Champagneglas", "Orrefors", 595, pGlas), mk("Doftljus", "Lumière", 200, pLjus), mk("Parfym", "Diptyque", 1150, pParfym), mk("Glaskaraff", "Designtorget", 349), mk("Festklänning", "Gina Tricot", 499)] },
+      { id: "kok", name: "Köksinredning", category: "Inspiration", date: "1 Maj", image: kok, archived: true, shared: [], items: [mk("Keramikskålar", "Designtorget", 449, undefined), mk("Kaffebryggare", "Moccamaster", 1490, undefined), mk("Keramikvas", "Granit", 299, undefined), mk("Airfryer", "Philips", 1499)] },
+      { id: "fest", name: "50 års fest", category: "Fest", date: "12 April", image: fest, archived: true, shared: [], items: [mk("Champagneglas", "Orrefors", 595, undefined), mk("Doftljus", "Lumière", 200, undefined), mk("Parfym", "Diptyque", 1150, undefined), mk("Glaskaraff", "Designtorget", 349), mk("Festklänning", "Gina Tricot", 499)] },
       { id: "inredning", name: "Inredning", category: "Hem & inredning", date: "15 December", image: inredning, archived: false, shared: [],
-        items: [mk("Keramikvas", "Granit", 299, pVas), mk("Doftljus", "Lumière", 249, pLjus), mk("Keramikskålar", "Designtorget", 449, pSkalar), mk("Kuddfodral", "Svanefors", 479)] },
+        items: [mk("Keramikvas", "Granit", 299, undefined), mk("Doftljus", "Lumière", 249, undefined), mk("Keramikskålar", "Designtorget", 449, undefined), mk("Kuddfodral", "Svanefors", 479)] },
       { id: "beauty", name: "Beauty", category: "Min önskelista", date: "20 December", image: beauty, archived: false, shared: [],
-        items: [mk("Läppstift & rouge", "Kicks", 349, pSmink), mk("C-vitaminserum", "The Ordinary", 289, pHudvard), mk("Schampo", "Pureléa", 179, pHarvard), mk("Ansiktskräm", "The Ordinary", 185)] },
+        items: [mk("Läppstift & rouge", "Kicks", 349, undefined), mk("C-vitaminserum", "The Ordinary", 289, undefined), mk("Schampo", "Pureléa", 179, undefined), mk("Ansiktskräm", "The Ordinary", 185)] },
     ],
   };
 }
