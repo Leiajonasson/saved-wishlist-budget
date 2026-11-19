@@ -21,8 +21,8 @@ function MonthBudget() {
   const s = useStore();
   const m = Number(month.split("-")[1] ?? 1);
   const real = s.lists.flatMap((l) => l.items.filter((i) => i.bought && i.boughtMonth === month)
-    .map((i) => ({ id: i.id, brand: i.brand, name: i.name, price: i.price, image: i.image, sub: l.name })));
-  const ex = examplePurchases(month).map((p) => ({ ...p, image: undefined as string | undefined, sub: `${p.day} ${MONTHS[m - 1]?.toLowerCase()}` }));
+    .map((i) => ({ id: i.id, brand: i.brand, name: i.name, price: i.price, image: i.image, url: i.url, sub: l.name })));
+  const ex = examplePurchases(month).map((p) => ({ ...p, sub: `${p.day} ${MONTHS[m - 1]?.toLowerCase()}` }));
   const bought = [...real, ...ex];
   const budget = s.budgets[month] ?? 0;
   const spent = bought.reduce((a, i) => a + i.price, 0);
@@ -48,7 +48,7 @@ function MonthBudget() {
         {bought.map((i) => (
           <li key={i.id} className="flex items-center gap-3 rounded-lg bg-card p-3">
             {i.image ? <img src={i.image} alt="" className="h-14 w-14 rounded object-cover" /> : <div className="grid h-14 w-14 place-items-center rounded bg-rose font-serif text-xl">{i.brand[0]}</div>}
-            <div className="min-w-0 flex-1"><div className="font-semibold">{i.brand} – {i.name}</div><div className="text-sm text-muted-foreground">{i.sub}</div></div>
+            <div className="min-w-0 flex-1"><a href={i.url} target="_blank" rel="noreferrer" className="font-semibold underline focus-visible:outline-2 focus-visible:outline-primary">{i.brand} – {i.name}</a><div className="text-sm text-muted-foreground">{i.sub}</div></div>
             <div className="font-serif text-lg">{i.price} kr</div>
           </li>
         ))}

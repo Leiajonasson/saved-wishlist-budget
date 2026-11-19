@@ -11,6 +11,8 @@ export const Route = createFileRoute("/budget")({
       { name: "description", content: "Sätt och följ din månadsbudget för shopping." },
       { property: "og:title", content: "Månadsbudget – Saved" },
       { property: "og:description", content: "Sätt och följ din månadsbudget för shopping." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Budget,

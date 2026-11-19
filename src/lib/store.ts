@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { PRODUCT_CATALOG, LEGACY_PRODUCT_KEYS } from "./product-catalog";
 import blackfriday from "@/assets/blackfriday.jpg";
 import jul from "@/assets/jul.jpg";
 import mamma from "@/assets/mamma.jpg";
@@ -27,7 +28,7 @@ const resa = resaA.url, kok = kokA.url, fest = festA.url;
 const ARCHIVE_IMAGES: Record<string, string> = { resa, kok, fest };
 const SEED_VERSION = 3;
 
-export type Offer = { store: string; price: number };
+export type Offer = { store: string; price: number; url: string };
 export type Item = {
   id: string;
   name: string;
@@ -35,6 +36,7 @@ export type Item = {
   url: string;
   image?: string | undefined;
   price: number;
+  priceKnown?: boolean;
   originalPrice?: number | undefined;
   offers: Offer[];
   bought: boolean;
@@ -52,6 +54,7 @@ export type WishList = {
 };
 export type State = {
   seedVersion?: number | undefined;
+  productVersion?: number;
   budgets: Record<string, number>; // YYYY-MM -> amount
   lists: WishList[];
 };
@@ -83,29 +86,47 @@ const STORE_URLS: Record<string, string> = {
   Ellos: "https://www.ellos.se",
 };
 export const storeUrl = (store: string) => STORE_URLS[store] ?? `https://www.google.com/search?q=${encodeURIComponent(store)}`;
-export const storeLogo = (store: string) => {
-  const domain = (STORE_URLS[store] ? new URL(STORE_URLS[store]).hostname : `${store.toLowerCase().replace(/\s+/g, "")}.se`);
+export const storeLogo = (store: string, url?: string) => {
+  const domain = url ? new URL(url).hostname : (STORE_URLS[store] ? new URL(STORE_URLS[store]).hostname : `${store.toLowerCase().replace(/\s+/g, "")}.se`);
   return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
 };
 
-const offersFor = (p: number): Offer[] => [
-  { store: "Zalando", price: Math.round(p * 0.87) },
-  { store: "Boozt", price: Math.round(p * 1.005) },
-  { store: "Ellos", price: Math.round(p * 0.998) },
-];
+export function realProductItem(item: Item): Item {
+  const key = LEGACY_PRODUCT_KEYS[item.name];
+  const product = key ? PRODUCT_CATALOG[key] : undefined;
+  if (!product) return { ...item, offers: item.offers.filter((o) => Boolean(o.url)) };
+  const price = item.bought ? item.price : product.price;
+  return { ...item, name: product.name, brand: product.brand, url: product.url,
+    image: product.image, price, priceKnown: item.bought || product.priceKnown,
+    originalPrice: undefined,
+    offers: product.priceKnown ? [{ store: product.store, price: product.price, url: product.url }] : [],
+  };
+}
+
+export function migrateProducts(saved: State): State {
+  if ((saved.productVersion ?? 0) >= 1) return saved;
+  return { ...saved, productVersion: 1, lists: saved.lists.map((list) => ({ ...list,
+    items: list.items.map((item) => {
+      let placeholder = false;
+      try { placeholder = new URL(item.url).hostname === "www.example.com" || new URL(item.url).hostname === "example.com"; } catch {}
+      return placeholder ? realProductItem(item) : { ...item, offers: item.offers.filter((o) => Boolean(o.url)) };
+    }),
+  })) };
+}
 
 function seed(): State {
   const now = monthKey();
   const budgets: Record<string, number> = { [now]: 2000 };
   const d = new Date();
   for (let i = 1; i <= 6; i++) budgets[monthKey(new Date(d.getFullYear(), d.getMonth() - i, 1))] = 1500 + i * 100;
-  const mk = (name: string, brand: string, price: number, image?: string, bought = false, original?: number): Item => ({
+  const mk = (name: string, brand: string, price: number, image?: string, bought = false, original?: number): Item => realProductItem({
     id: uid(), name, brand, url: "https://www.example.com/produkt", image, price, originalPrice: original,
-    offers: offersFor(price), bought, boughtMonth: bought ? now : undefined,
+    offers: [], bought, boughtMonth: bought ? now : undefined,
   });
   return {
     budgets,
     seedVersion: SEED_VERSION,
+    productVersion: 1,
     lists: [
       { id: "black-friday", name: "Black Friday köp", category: "Black Friday", date: "27 November", image: blackfriday, archived: false, shared: [],
         items: [mk("Svarta Jeans", "Weekday", 399, jeans, false, 499), mk("Stickad tröja", "Arket", 199, pTroja, false, 349), mk("Ullkappa", "COS", 1050, pKappa, true, 1500), mk("Hörlurar", "Sony", 899, undefined, false, 1290)] },
@@ -153,7 +174,7 @@ function load() {
           ...fresh.lists.filter((f) => !saved.lists.some((l) => l.id === f.id)),
         ] };
       }
-      state = {
+      state = migrateProducts({
         ...saved,
         lists: saved.lists.map((list) =>
           list.id === "mamma" && (list.image === mamma || /\/mamma(?:-[\w-]+)?\.jpg(?:[?#].*)?$/.test(list.image ?? ""))
@@ -162,7 +183,8 @@ function load() {
               ? { ...list, image: ARCHIVE_IMAGES[list.id] }
               : list,
         ),
-      };
+      });
+      localStorage.setItem(KEY, JSON.stringify(state));
     }
   } catch {}
 }
@@ -204,17 +226,16 @@ export const actions = {
   toggleArchive: (id: string) => set((s) => ({ ...s, lists: s.lists.map((l) => (l.id === id ? { ...l, archived: !l.archived } : l)) })),
   removeList: (id: string) => set((s) => ({ ...s, lists: s.lists.filter((l) => l.id !== id) })),
   share: (id: string, who: string) => set((s) => ({ ...s, lists: s.lists.map((l) => (l.id === id ? { ...l, shared: [...l.shared, who] } : l)) })),
-  addItem: (listId: string, data: { name: string; brand: string; url: string; image?: string | undefined; price: number; originalPrice?: number | undefined }) => {
-    const item: Item = { id: uid(), ...data, offers: offersFor(data.price), bought: false };
+  addItem: (listId: string, data: { name: string; brand: string; url: string; image?: string | undefined; price: number; priceKnown?: boolean; originalPrice?: number | undefined }) => {
+    const item: Item = { id: uid(), ...data, offers: [], bought: false };
     set((s) => ({ ...s, lists: s.lists.map((l) => (l.id === listId ? { ...l, items: [...l.items, item] } : l)) }));
   },
   addItemFromUrl: (listId: string, url: string): boolean => {
     const t = titleFromUrl(url);
     if (!t) return false;
-    let h = 0;
-    for (const c of url) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-    const price = 149 + (h % 18) * 50;
-    const item: Item = { id: uid(), ...t, url, price, originalPrice: h % 3 === 0 ? Math.round(price * 1.25) : undefined, offers: offersFor(price), bought: false };
+    const u = new URL(url);
+    if (u.protocol !== "https:" && u.protocol !== "http:") return false;
+    const item: Item = { id: uid(), ...t, url, price: 0, priceKnown: false, offers: [], bought: false };
     set((s) => ({ ...s, lists: s.lists.map((l) => (l.id === listId ? { ...l, items: [...l.items, item] } : l)) }));
     return true;
   },
@@ -230,18 +251,14 @@ export const actions = {
 };
 
 // Example purchases for past months (illustrative, deterministic per month)
-const EXAMPLES: [string, string, number][] = [
-  ["Ullkofta", "Arket", 699], ["Löparskor", "Nike", 1199], ["Doftljus", "Byredo", 450], ["Hörlurar", "Sony", 899],
-  ["Bok: Tidens väv", "Adlibris", 189], ["Krukväxt", "Plantagen", 249], ["Jeans", "Levi's", 999], ["Mascara", "Lyko", 179],
-  ["Kaffebryggare", "Moccamaster", 1490], ["Tröja", "COS", 590], ["Spel", "Webhallen", 549], ["Handduk", "Hemtex", 199],
-  ["Present till Ella", "Åhlens", 350], ["Solkräm", "Apotea", 159], ["Ryggsäck", "Fjällräven", 1095], ["Örhängen", "Pandora", 499],
-];
+const EXAMPLES = Object.values(PRODUCT_CATALOG).filter((p) => p.priceKnown);
 export function examplePurchases(key: string) {
   let h = 0; for (const c of key) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-  const n = 2 + (h % 3), out: { id: string; brand: string; name: string; price: number; day: number }[] = [];
+  const n = 2 + (h % 3), out: { id: string; brand: string; name: string; price: number; day: number; url: string; image?: string }[] = [];
   for (let i = 0; i < n; i++) {
-    const [name, brand, price] = EXAMPLES[(h + i * 5) % EXAMPLES.length]!;
-    out.push({ id: `${key}-${i}`, brand, name, price, day: 1 + ((h >> (i + 2)) % 28) });
+    const product = EXAMPLES[(h + i * 5) % EXAMPLES.length];
+    if (!product) continue;
+    out.push({ id: `${key}-${i}`, ...product, day: 1 + ((h >>> (i + 2)) % 28) });
   }
   return out.sort((a, b) => a.day - b.day);
 }

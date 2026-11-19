@@ -10,6 +10,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Samla önskningar, jämför priser och håll koll på din shoppingbudget." },
       { property: "og:title", content: "Saved – önskelista och budget" },
       { property: "og:description", content: "Planera köp inför Black Friday och jul utan impulsköp." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Index,

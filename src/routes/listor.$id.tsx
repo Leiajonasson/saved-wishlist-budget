@@ -4,7 +4,7 @@ import { useState } from "react";
 import * as D from "@radix-ui/react-dialog";
 import { Shell } from "@/components/Shell";
 import { ThemePicker } from "@/components/ThemePicker";
-import { actions, useStore, type Item, budgetSummary, monthKey, storeUrl, storeLogo } from "@/lib/store";
+import { actions, useStore, type Item, budgetSummary, monthKey, storeLogo } from "@/lib/store";
 import { fetchProductInfo } from "@/lib/product.functions";
 
 export const Route = createFileRoute("/listor/$id")({
@@ -14,6 +14,8 @@ export const Route = createFileRoute("/listor/$id")({
       { name: "description", content: "Dina önskningar, priser och prisjämförelser." },
       { property: "og:title", content: "Önskelista – Saved" },
       { property: "og:description", content: "Dina önskningar, priser och prisjämförelser." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ListPage,
@@ -99,7 +101,7 @@ function ListPage() {
             if (info.ok && info.name) {
               actions.addItem(list.id, {
                 name: info.name, brand: info.brand ?? "Okänd", url: u,
-                image: info.image, price: info.price ?? 299,
+                image: info.image, price: info.price ?? 0, priceKnown: info.price !== undefined,
               });
               setUrl(""); setAdding(false);
             } else if (actions.addItemFromUrl(list.id, u)) {
@@ -146,7 +148,7 @@ function ItemCard({ item, onOpen }: { item: Item; onOpen: () => void }) {
     <button onClick={onOpen} className="relative flex aspect-[3/3.6] flex-col rounded-lg border border-primary/70 bg-card p-2 text-left shadow-md">
       <div className="relative flex-1 overflow-hidden rounded bg-muted">
         <div className={`h-full w-full ${item.bought ? "opacity-40" : ""}`}>
-          {item.image ? <img src={item.image} alt={item.name} className="h-full w-full object-cover" /> :
+          {item.image ? <img src={item.image} alt={item.name} className="h-full w-full object-contain" /> :
             <span className="grid h-full place-items-center font-serif text-2xl text-muted-foreground">{item.brand}</span>}
         </div>
         {drop && <span className="absolute top-1 left-1 rounded bg-primary px-1.5 py-0.5 text-[10px] font-semibold text-primary-foreground">Prissänkt</span>}
@@ -158,7 +160,7 @@ function ItemCard({ item, onOpen }: { item: Item; onOpen: () => void }) {
           </span>
         )}
       </div>
-      <div className="mt-2 flex justify-between text-xs font-semibold"><span className="truncate">{item.name}</span><span>{item.price}kr</span></div>
+      <div className="mt-2 flex justify-between gap-1 text-xs font-semibold"><span className="min-w-0 truncate">{item.name}</span><span className="shrink-0">{item.priceKnown === false ? "Se butik" : `${item.price}kr`}</span></div>
     </button>
   );
 }
@@ -189,9 +191,9 @@ function ItemDetail({ item, listId, onClose }: { item: Item; listId: string; onC
           {item.image ? <img src={item.image} alt={item.name} className="h-full w-full object-cover" /> :
             <span className="grid h-full place-items-center font-serif text-3xl text-muted-foreground">{item.brand}</span>}
         </div>
-        <div className="mt-5 flex items-baseline justify-between">
-          <span className="font-semibold">{item.brand} - {item.name}</span>
-          <span className="text-xl">{item.price}kr</span>
+        <div className="mt-5 flex flex-wrap items-baseline justify-between gap-2">
+          <span className="min-w-0 font-semibold">{item.brand} - {item.name}</span>
+          <span className="shrink-0 text-xl">{item.priceKnown === false ? "Se pris i butik" : `${item.price}kr`}</span>
         </div>
         {item.originalPrice && item.originalPrice > item.price && (
           <p className="mt-1 text-sm text-primary">Prissänkt från {item.originalPrice} kr (−{item.originalPrice - item.price} kr)</p>
@@ -199,21 +201,22 @@ function ItemDetail({ item, listId, onClose }: { item: Item; listId: string; onC
         <a href={item.url} target="_blank" rel="noreferrer" className="mt-4 flex items-center justify-center gap-2 rounded-lg bg-primary py-2 font-serif text-lg text-primary-foreground">
           Gå till butik <ArrowUpRight className="h-5 w-5" />
         </a>
-        <h3 className="mt-6 font-semibold">Jämför priset</h3>
+        {item.offers.length > 0 && <h3 className="mt-6 font-semibold">{item.offers.length > 1 ? "Jämför priset" : "Köp hos"}</h3>}
         <div className="mt-3 space-y-3">
           {item.offers.map((o) => (
-            <a key={o.store} href={storeUrl(o.store)} target="_blank" rel="noreferrer"
+            <a key={o.store} href={o.url} target="_blank" rel="noreferrer"
               className="flex items-center justify-between rounded-lg bg-chip px-3 py-2 font-serif text-lg transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
               <span className="flex items-center gap-2">
-                <img src={storeLogo(o.store)} alt="" className="h-5 w-5 rounded-sm" />
+                <img src={storeLogo(o.store, o.url)} alt="" className="h-5 w-5 rounded-sm" />
                 {o.store}
                 <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
-                {o === cheapest && <span className="ml-1 font-sans text-xs font-semibold text-primary">Billigast</span>}
+                {item.offers.length > 1 && o === cheapest && <span className="ml-1 font-sans text-xs font-semibold text-primary">Billigast</span>}
               </span>
               <span className="rounded-lg bg-primary px-3 py-1 text-primary-foreground">{o.price} kr</span>
             </a>
           ))}
         </div>
+        <p className="mt-2 text-xs text-muted-foreground">Aktuellt pris och lagerstatus visas i butiken.</p>
         <div className="mt-6 flex gap-3">
           <button onClick={() => actions.toggleBought(listId, item.id)} className="flex-1 rounded-lg bg-rose py-2 font-semibold">
             {item.bought ? "Ångra köpt" : "Markera som köpt"}

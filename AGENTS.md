@@ -28,3 +28,6 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Keep verified example products in the browser-safe product catalog; only link offers to the exact product page to avoid fabricated comparisons.
+- Migrate placeholder products in place and preserve item IDs, purchase prices, purchase months, custom lists and user-added URLs so catalog changes cannot erase personal history.

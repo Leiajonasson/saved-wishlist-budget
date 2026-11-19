@@ -10,6 +10,8 @@ export const Route = createFileRoute("/arkiv/budgets/")({
       { name: "description", content: "Se hur dina tidigare månadsbudgetar gick." },
       { property: "og:title", content: "Arkiverade budgetar – Saved" },
       { property: "og:description", content: "Se hur dina tidigare månadsbudgetar gick." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Budgets,

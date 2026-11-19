@@ -9,6 +9,8 @@ export const Route = createFileRoute("/arkiv/")({
       { name: "description", content: "Tidigare budgetar och arkiverade önskelistor." },
       { property: "og:title", content: "Arkiv – Saved" },
       { property: "og:description", content: "Tidigare budgetar och arkiverade önskelistor." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: () => (

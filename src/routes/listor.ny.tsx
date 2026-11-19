@@ -14,6 +14,8 @@ export const Route = createFileRoute("/listor/ny")({
       { name: "description", content: "Skapa en ny önskelista för ett tillfälle." },
       { property: "og:title", content: "Skapa önskelista – Saved" },
       { property: "og:description", content: "Skapa en ny önskelista för ett tillfälle." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: NewList,

@@ -10,6 +10,8 @@ export const Route = createFileRoute("/listor/arkiv")({
       { name: "description", content: "Önskelistor du har arkiverat." },
       { property: "og:title", content: "Arkiverade listor – Saved" },
       { property: "og:description", content: "Önskelistor du har arkiverat." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Archived,

@@ -10,6 +10,8 @@ export const Route = createFileRoute("/listor/")({
       { name: "description", content: "Alla dina önskelistor för olika tillfällen." },
       { property: "og:title", content: "Önskelistor – Saved" },
       { property: "og:description", content: "Alla dina önskelistor för olika tillfällen." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Lists,
