@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { PRODUCT_CATALOG, LEGACY_PRODUCT_KEYS } from "./product-catalog";
 import blackfriday from "@/assets/blackfriday.jpg";
 import jul from "@/assets/jul.jpg";
@@ -141,55 +142,102 @@ function seed(): State {
   };
 }
 
-const KEY = "saved-app-v1";
 let state: State = seed();
 const serverState = state;
 let hydrated = false;
 const listeners = new Set<() => void>();
 
-function load() {
+// ---- Databaslagring: allt sparas i Lovable Cloud så att länken visar samma innehåll för alla ----
+
+let persisting = false;
+let persistAgain = false;
+
+async function persistNow() {
+  if (persisting) { persistAgain = true; return; }
+  persisting = true;
+  const s = state;
+  try {
+    await supabase.from("offers").delete().gte("id", 0);
+    await supabase.from("items").delete().neq("id", "");
+    await supabase.from("wishlists").delete().neq("id", "");
+    await supabase.from("budgets").delete().neq("month", "");
+    const budgetRows = Object.entries(s.budgets).map(([month, amount]) => ({ month, amount }));
+    if (budgetRows.length) await supabase.from("budgets").insert(budgetRows);
+    if (s.lists.length) {
+      await supabase.from("wishlists").insert(s.lists.map((l, i) => ({
+        id: l.id, name: l.name, category: l.category, date: l.date,
+        image: l.image ?? null, archived: l.archived, shared: l.shared, position: i,
+      })));
+      const itemRows = s.lists.flatMap((l) => l.items.map((it, i) => ({
+        id: it.id, list_id: l.id, name: it.name, brand: it.brand, url: it.url,
+        image: it.image ?? null, price: it.price, price_known: it.priceKnown ?? true,
+        original_price: it.originalPrice ?? null, compared: it.compared ?? false,
+        bought: it.bought, bought_month: it.boughtMonth ?? null, position: i,
+      })));
+      if (itemRows.length) await supabase.from("items").insert(itemRows);
+      const offerRows = s.lists.flatMap((l) => l.items.flatMap((it) => it.offers.map((o) => ({
+        item_id: it.id, store: o.store, price: o.price, url: o.url,
+      }))));
+      if (offerRows.length) await supabase.from("offers").insert(offerRows);
+    }
+  } catch {}
+  persisting = false;
+  if (persistAgain) { persistAgain = false; void persistNow(); }
+}
+
+let persistTimer: ReturnType<typeof setTimeout> | undefined;
+function persist() {
+  clearTimeout(persistTimer);
+  persistTimer = setTimeout(() => void persistNow(), 400);
+}
+
+async function load() {
   if (hydrated || typeof window === "undefined") return;
   hydrated = true;
   try {
-    const raw = localStorage.getItem(KEY);
-    if (raw) {
-      let saved = JSON.parse(raw) as State;
-      if ((saved.seedVersion ?? 1) < SEED_VERSION) {
-        const fresh = seed();
-        saved = { ...saved, seedVersion: SEED_VERSION, lists: [
-          ...saved.lists.map((l) => {
-            const f = fresh.lists.find((x) => x.id === l.id);
-            if (!f) return l;
-            const own = l.items.filter((i) => !i.url.includes("example.com"));
-            const img = ARCHIVE_IMAGES[l.id] && !(l.image ?? "").startsWith("data:") ? ARCHIVE_IMAGES[l.id] : l.image;
-            return { ...l, image: img, items: [...f.items, ...own] };
-          }),
-          ...fresh.lists.filter((f) => !saved.lists.some((l) => l.id === f.id)),
-        ] };
-      }
+    const [{ data: lists }, { data: items }, { data: offers }, { data: budgets }] = await Promise.all([
+      supabase.from("wishlists").select("*").order("position"),
+      supabase.from("items").select("*").order("position"),
+      supabase.from("offers").select("*"),
+      supabase.from("budgets").select("*"),
+    ]);
+    if (!lists || lists.length === 0) {
+      // Första besöket: fyll databasen med startinnehållet.
+      state = seed();
+      await persistNow();
+    } else {
       state = migrateProducts({
-        ...saved,
-        lists: saved.lists.map((list) =>
-          list.id === "mamma" && (list.image === mamma || /\/mamma(?:-[\w-]+)?\.jpg(?:[?#].*)?$/.test(list.image ?? ""))
-            ? { ...list, image: mammasFodelsedag.url }
-            : ARCHIVE_IMAGES[list.id] && false
-              ? { ...list, image: ARCHIVE_IMAGES[list.id] }
-              : list,
-        ),
+        seedVersion: SEED_VERSION,
+        productVersion: 3,
+        budgets: Object.fromEntries((budgets ?? []).map((b) => [b.month, Number(b.amount)])),
+        lists: lists.map((l) => ({
+          id: l.id, name: l.name, category: l.category, date: l.date,
+          image: l.image ?? undefined, archived: l.archived,
+          shared: Array.isArray(l.shared) ? (l.shared as string[]) : [],
+          items: (items ?? []).filter((i) => i.list_id === l.id).map((i) => ({
+            id: i.id, name: i.name, brand: i.brand, url: i.url,
+            image: i.image ?? undefined, price: Number(i.price),
+            priceKnown: i.price_known,
+            originalPrice: i.original_price == null ? undefined : Number(i.original_price),
+            compared: i.compared, bought: i.bought, boughtMonth: i.bought_month ?? undefined,
+            offers: (offers ?? []).filter((o) => o.item_id === i.id).map((o) => ({ store: o.store, price: Number(o.price), url: o.url })),
+          })),
+        })),
       });
-      localStorage.setItem(KEY, JSON.stringify(state));
     }
+    listeners.forEach((l) => l());
   } catch {}
 }
+
 function set(fn: (s: State) => State) {
   state = fn(state);
-  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {}
   listeners.forEach((l) => l());
+  persist();
 }
 
 export function useStore() {
   return useSyncExternalStore(
-    (l) => { load(); listeners.add(l); l(); return () => listeners.delete(l); },
+    (l) => { void load(); listeners.add(l); l(); return () => listeners.delete(l); },
     () => state,
     () => serverState,
   );

@@ -14,7 +14,142 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      budgets: {
+        Row: {
+          amount: number
+          month: string
+        }
+        Insert: {
+          amount?: number
+          month: string
+        }
+        Update: {
+          amount?: number
+          month?: string
+        }
+        Relationships: []
+      }
+      items: {
+        Row: {
+          bought: boolean
+          bought_month: string | null
+          brand: string
+          compared: boolean
+          id: string
+          image: string | null
+          list_id: string
+          name: string
+          original_price: number | null
+          position: number
+          price: number
+          price_known: boolean
+          url: string
+        }
+        Insert: {
+          bought?: boolean
+          bought_month?: string | null
+          brand?: string
+          compared?: boolean
+          id: string
+          image?: string | null
+          list_id: string
+          name: string
+          original_price?: number | null
+          position?: number
+          price?: number
+          price_known?: boolean
+          url?: string
+        }
+        Update: {
+          bought?: boolean
+          bought_month?: string | null
+          brand?: string
+          compared?: boolean
+          id?: string
+          image?: string | null
+          list_id?: string
+          name?: string
+          original_price?: number | null
+          position?: number
+          price?: number
+          price_known?: boolean
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "items_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "wishlists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      offers: {
+        Row: {
+          id: number
+          item_id: string
+          price: number
+          store: string
+          url: string
+        }
+        Insert: {
+          id?: never
+          item_id: string
+          price?: number
+          store: string
+          url?: string
+        }
+        Update: {
+          id?: never
+          item_id?: string
+          price?: number
+          store?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offers_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wishlists: {
+        Row: {
+          archived: boolean
+          category: string
+          date: string
+          id: string
+          image: string | null
+          name: string
+          position: number
+          shared: Json
+        }
+        Insert: {
+          archived?: boolean
+          category?: string
+          date?: string
+          id: string
+          image?: string | null
+          name: string
+          position?: number
+          shared?: Json
+        }
+        Update: {
+          archived?: boolean
+          category?: string
+          date?: string
+          id?: string
+          image?: string | null
+          name?: string
+          position?: number
+          shared?: Json
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
