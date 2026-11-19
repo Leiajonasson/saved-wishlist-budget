@@ -85,6 +85,7 @@ const STORE_URLS: Record<string, string> = {
   Boozt: "https://www.boozt.com",
   Ellos: "https://www.ellos.se",
 };
+export const storeNameFromUrl = (u: string) => { try { const b = new URL(u).hostname.replace(/^www\./, "").split(".").slice(-2)[0] ?? "Butik"; return b.charAt(0).toUpperCase() + b.slice(1); } catch { return "Butik"; } };
 export const storeUrl = (store: string) => STORE_URLS[store] ?? `https://www.google.com/search?q=${encodeURIComponent(store)}`;
 export const storeLogo = (store: string, url?: string) => {
   const domain = url ? new URL(url).hostname : (STORE_URLS[store] ? new URL(STORE_URLS[store]).hostname : `${store.toLowerCase().replace(/\s+/g, "")}.se`);
@@ -250,6 +251,19 @@ export const actions = {
       ...s,
       lists: s.lists.map((l) => l.id !== listId ? l : {
         ...l, items: l.items.map((i) => i.id !== itemId ? i : { ...i, bought: !i.bought, boughtMonth: !i.bought ? monthKey() : undefined }),
+      }),
+    })),
+  addOffers: (listId: string, itemId: string, offers: Offer[]) =>
+    set((s) => ({
+      ...s,
+      lists: s.lists.map((l) => l.id !== listId ? l : {
+        ...l, items: l.items.map((i) => {
+          if (i.id !== itemId) return i;
+          const base = i.offers.length || i.priceKnown === false ? i.offers : [{ store: storeNameFromUrl(i.url), price: i.price, url: i.url }];
+          const merged = [...base];
+          for (const o of offers) if (!merged.some((m) => m.url === o.url || m.store === o.store)) merged.push(o);
+          return { ...i, offers: merged };
+        }),
       }),
     })),
   removeItem: (listId: string, itemId: string) =>
