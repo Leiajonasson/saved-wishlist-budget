@@ -5,6 +5,7 @@ import * as D from "@radix-ui/react-dialog";
 import { Shell } from "@/components/Shell";
 import { ThemePicker } from "@/components/ThemePicker";
 import { actions, useStore, type Item, budgetSummary, monthKey, storeUrl } from "@/lib/store";
+import { fetchProductInfo } from "@/lib/product.functions";
 
 export const Route = createFileRoute("/listor/$id")({
   head: () => ({
@@ -25,6 +26,7 @@ function ListPage() {
   const [adding, setAdding] = useState(false);
   const [url, setUrl] = useState("");
   const [err, setErr] = useState("");
+  const [fetching, setFetching] = useState(false);
   const [openItem, setOpenItem] = useState<string | null>(null);
   const [sharing, setSharing] = useState(false);
   const [who, setWho] = useState("");
@@ -87,13 +89,31 @@ function ListPage() {
 
       {adding && (
         <Sheet onClose={() => { setAdding(false); setErr(""); }} title="Skapa önskan">
-          <form onSubmit={(e) => { e.preventDefault(); if (actions.addItemFromUrl(list.id, url.trim())) { setUrl(""); setAdding(false); setErr(""); } else setErr("Klistra in en giltig produktlänk."); }}>
+          <form onSubmit={async (e) => {
+            e.preventDefault();
+            const u = url.trim();
+            if (!u || fetching) return;
+            setFetching(true); setErr("");
+            const info = await fetchProductInfo({ data: { url: u } }).catch(() => ({ ok: false as const }));
+            setFetching(false);
+            if (info.ok && info.name) {
+              actions.addItem(list.id, {
+                name: info.name, brand: info.brand ?? "Okänd", url: u,
+                image: info.image, price: info.price ?? 299,
+              });
+              setUrl(""); setAdding(false);
+            } else if (actions.addItemFromUrl(list.id, u)) {
+              setUrl(""); setAdding(false);
+            } else setErr("Klistra in en giltig produktlänk.");
+          }}>
             <label className="flex items-center gap-3 rounded-lg bg-field px-4 py-4 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary">
               <Search className="h-5 w-5" />
               <input autoFocus aria-label="Produktlänk" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="infoga länk..." className="flex-1 bg-transparent text-sm outline-none" />
             </label>
             {err && <p className="mt-2 text-sm text-destructive">{err}</p>}
-            <button className="mt-8 w-full rounded-lg bg-primary py-2 font-serif text-xl text-primary-foreground">Lägg till</button>
+            <button disabled={fetching} className="mt-8 w-full rounded-lg bg-primary py-2 font-serif text-xl text-primary-foreground disabled:opacity-60">
+              {fetching ? "Hämtar produktinfo…" : "Lägg till"}
+            </button>
           </form>
         </Sheet>
       )}

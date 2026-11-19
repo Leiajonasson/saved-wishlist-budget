@@ -200,6 +200,10 @@ export const actions = {
   toggleArchive: (id: string) => set((s) => ({ ...s, lists: s.lists.map((l) => (l.id === id ? { ...l, archived: !l.archived } : l)) })),
   removeList: (id: string) => set((s) => ({ ...s, lists: s.lists.filter((l) => l.id !== id) })),
   share: (id: string, who: string) => set((s) => ({ ...s, lists: s.lists.map((l) => (l.id === id ? { ...l, shared: [...l.shared, who] } : l)) })),
+  addItem: (listId: string, data: { name: string; brand: string; url: string; image?: string | undefined; price: number; originalPrice?: number | undefined }) => {
+    const item: Item = { id: uid(), ...data, offers: offersFor(data.price), bought: false };
+    set((s) => ({ ...s, lists: s.lists.map((l) => (l.id === listId ? { ...l, items: [...l.items, item] } : l)) }));
+  },
   addItemFromUrl: (listId: string, url: string): boolean => {
     const t = titleFromUrl(url);
     if (!t) return false;
