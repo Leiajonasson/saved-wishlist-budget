@@ -5,13 +5,13 @@ const GATEWAY = "https://connector-gateway.lovable.dev/firecrawl/v2";
 
 const host = (u: string) => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return ""; } };
 const storeName = (h: string) => { const b = h.split(".").slice(-2)[0] ?? h; return b.charAt(0).toUpperCase() + b.slice(1); };
-const BLOCKED = /(plick|tradera|blocket|sellpy|vinted|ebay|amazon\.com|prisbot|varusok|google|youtube|facebook|instagram|pinterest|reddit|wikipedia|tiktok|pricerunner|prisjakt)\./;
+const BLOCKED = /(prisbot|varusok|google|youtube|facebook|instagram|pinterest|reddit|wikipedia|tiktok|pricerunner|prisjakt)\./;
 
 export const findOtherStores = createServerFn({ method: "POST" })
-  .inputValidator((d: { name: string; brand?: string; url?: string; price?: number }) => {
+  .inputValidator((d: { name: string; brand?: string; url?: string }) => {
     const name = String(d?.name ?? "").trim().slice(0, 150);
     if (name.length < 2) throw new Error("Produktnamn saknas");
-    return { name, brand: String(d.brand ?? "").slice(0, 60), url: String(d.url ?? ""), price: Number(d.price) || 0 };
+    return { name, brand: String(d.brand ?? "").slice(0, 60), url: String(d.url ?? "") };
   })
   .handler(async ({ data }): Promise<{ ok: true; offers: FoundOffer[] } | { ok: false; error: string }> => {
     const lk = process.env["LOVABLE_API_KEY"], fk = process.env["FIRECRAWL_API_KEY"];
@@ -35,7 +35,6 @@ export const findOtherStores = createServerFn({ method: "POST" })
       const h = host(r.url); const j = r.json;
       if (!h || seen.has(h) || BLOCKED.test(h + ".")) continue;
       if (!j?.sameProduct || typeof j.price !== "number" || j.price <= 0) continue;
-      if (data.price > 0 && (j.price < data.price * 0.4 || j.price > data.price * 2.5)) continue;
       if (j.currency && !/sek|kr/i.test(j.currency)) continue;
       seen.add(h);
       offers.push({ store: storeName(h), price: Math.round(j.price), url: r.url });
