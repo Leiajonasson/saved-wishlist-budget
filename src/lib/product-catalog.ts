@@ -1,37 +1,41 @@
-import kappaImage from "@/assets/produkt-kappa.jpg.asset.json";
-import ljusImage from "@/assets/produkt-ljus.jpg.asset.json";
-import glasImage from "@/assets/produkt-glas.jpg.asset.json";
-import parfymImage from "@/assets/produkt-parfym.jpg.asset.json";
-import vasImage from "@/assets/produkt-vas.jpg.asset.json";
-import resvaskaImage from "@/assets/produkt-resvaska.jpg.asset.json";
-import skalarImage from "@/assets/produkt-skalar.jpg.asset.json";
-import kaffeImage from "@/assets/produkt-kaffe.jpg.asset.json";
-import sminkImage from "@/assets/produkt-smink.jpg.asset.json";
-import hudvardImage from "@/assets/produkt-hudvard.jpg.asset.json";
-import harvardImage from "@/assets/produkt-harvard.jpg.asset.json";
-
-// Product pages verified on 2026-11-19. Prices are snapshots, not live comparisons.
+// Product pages and images verified on 2026-11-19. Prices are snapshots, not live comparisons.
+// Images are the stores' own product photos, hotlinked from each product page.
+// ARKET and Komplett block hotlinking, so those photos are bundled locally instead.
+import trojaImage from "@/assets/real-troja.jpg";
+import halsdukImage from "@/assets/real-halsduk.jpg";
+import horlurarImage from "@/assets/real-horlurar.avif";
 export type CatalogProduct = {
   name: string; brand: string; store: string; price: number; priceKnown: boolean;
   url: string; image?: string;
 };
 export const PRODUCT_CATALOG: Record<string, CatalogProduct> = {
-  jeans: {"name": "KLEAN svarta jeans", "brand": "Weekday", "store": "Zalando", "price": 679, "url": "https://www.zalando.se/weekday-klean-regular-straight-jeans-straight-leg-black-web22g068-q11.html", "priceKnown": true},
-  troja: {"name": "Tröja i alpacka och ull", "brand": "ARKET", "store": "ARKET", "price": 990, "url": "https://www.arket.com/sv-se/product/alpaca-woolblendjumper-black-1248555003/", "priceKnown": true},
-  kappa: {"name": "KIA ullkappa, grå", "brand": "Weekday", "store": "Zalando", "price": 1526, "url": "https://www.zalando.se/weekday-coat-klassisk-kapparock-grey-web21u038-c12.html", "priceKnown": true, "image": kappaImage.url},
-  horlurar: {"name": "WH-CH520 hörlurar", "brand": "Sony", "store": "Komplett", "price": 390, "url": "https://www.komplett.se/product/1225298/tv-ljud-bild/horlurar-tillbehor/horlurar/sony-wh-ch520-traadlosa-horlurar-on-ear-svart", "priceKnown": true},
-  ljus: {"name": "JÄMLIK vaniljljus, 40 tim", "brand": "IKEA", "store": "IKEA", "price": 29, "url": "https://www.ikea.com/se/sv/p/jaemlik-doftljus-i-glas-vanilj-ljusbeige-70502178/", "priceKnown": true, "image": ljusImage.url},
-  halsduk: {"name": "Triangelscarf i kashmir", "brand": "ARKET", "store": "ARKET", "price": 990, "url": "https://www.arket.com/sv-se/product/cashmere-scarf-black-1357104001/", "priceKnown": true},
-  glas: {"name": "FJÄLLUGGLA glas, 4-pack", "brand": "IKEA", "store": "IKEA", "price": 149, "url": "https://www.ikea.com/se/sv/p/fjaelluggla-champagneglas-klarglas-10628722/", "priceKnown": true, "image": glasImage.url},
-  parfym: {"name": "Light Blue EdT, 25 ml", "brand": "Dolce & Gabbana", "store": "Lyko", "price": 0, "url": "https://lyko.com/sv/dolce-gabbana/dolce--gabbana-light-blue-eau-de-toilette-25ml", "priceKnown": false, "image": parfymImage.url},
-  vas: {"name": "POMP glasvas, 18 cm", "brand": "IKEA", "store": "IKEA", "price": 49, "url": "https://www.ikea.com/se/sv/p/pomp-vas-lykta-klarglas-80326537/", "priceKnown": true, "image": vasImage.url},
-  resvaska: {"name": "Soundbox kabinväska, 55 cm", "brand": "American Tourister", "store": "Booztlet", "price": 1274.25, "url": "https://www.booztlet.com/se/sv/american-tourister/soundbox-spinner-67-24-tsa-exp_32831507", "priceKnown": true, "image": resvaskaImage.url},
-  solglas: {"name": "Original Wayfarer Classic", "brand": "Ray-Ban", "store": "Ray-Ban", "price": 0, "url": "https://www.ray-ban.com/sweden/sunglasses/RB2140original%20wayfarer%20classic-svart/805289126591", "priceKnown": false},
-  skalar: {"name": "FÄRGKLAR skålar, 4-pack", "brand": "IKEA", "store": "IKEA", "price": 100, "url": "https://www.ikea.com/se/sv/p/faergklar-skal-ljusbla-10600426/", "priceKnown": true, "image": skalarImage.url},
-  kaffe: {"name": "Manual S kaffebryggare", "brand": "Moccamaster", "store": "Elgiganten", "price": 2499, "url": "https://www.elgiganten.se/product/hem-hushall-tradgard/kaffemaskiner-te/kaffebryggare/moccamaster-kaffebryggare-53721/614058", "priceKnown": true, "image": kaffeImage.url},
-  smink: {"name": "Lifter Gloss 007 Amber", "brand": "Maybelline", "store": "Lyko", "price": 0, "url": "https://lyko.com/sv/maybelline-new-york/maybelline-lifter-gloss-amber-7", "priceKnown": false, "image": sminkImage.url},
-  hudvard: {"name": "Ascorbyl Glucoside 12%, 30 ml", "brand": "The Ordinary", "store": "Lyko", "price": 191, "url": "https://lyko.com/sv/the-ordinary/the-ordinary-ascorbyl-glucoside-solution-12--30ml", "priceKnown": true, "image": hudvardImage.url},
-  harvard: {"name": "Elvital Hyaluron Pure, 250 ml", "brand": "L’Oréal Paris", "store": "Lyko", "price": 0, "url": "https://lyko.com/sv/loreal-paris/l-or-al-paris-elvital-hyaluron-pure--purifying-shampoo-250-ml", "priceKnown": false, "image": harvardImage.url},
+  jeans: {"name": "KLEAN svarta jeans", "brand": "Weekday", "store": "Zalando", "price": 679, "url": "https://www.zalando.se/weekday-klean-regular-straight-jeans-straight-leg-black-web22g068-q11.html", "priceKnown": true, "image": "https://img01.ztat.net/article/spp-media-p1/943d19a29a5f404196cd909ca67abbc9/d57be323f63049fbb4c0be8e6fb4712a.jpg?imwidth=800&filter=packshot"},
+  troja: {"name": "Tröja i alpacka och ull", "brand": "ARKET", "store": "ARKET", "price": 990, "url": "https://www.arket.com/sv-se/product/alpaca-woolblendjumper-black-1248555003/", "priceKnown": true, "image": trojaImage},
+  kappa: {"name": "KIA ullkappa, grå", "brand": "Weekday", "store": "Zalando", "price": 1526, "url": "https://www.zalando.se/weekday-coat-klassisk-kapparock-grey-web21u038-c12.html", "priceKnown": true, "image": "https://img01.ztat.net/article/spp-media-p1/f77797e3460e4dc48abb93aeb18596dd/9255c243ada045f588bec568a748aa13.jpg?imwidth=800&filter=packshot"},
+  horlurar: {"name": "WH-CH520 hörlurar", "brand": "Sony", "store": "Komplett", "price": 390, "url": "https://www.komplett.se/product/1225298/tv-ljud-bild/horlurar-tillbehor/horlurar/sony-wh-ch520-traadlosa-horlurar-on-ear-svart", "priceKnown": true, "image": horlurarImage},
+  ljus: {"name": "JÄMLIK vaniljljus, 40 tim", "brand": "IKEA", "store": "IKEA", "price": 29, "url": "https://www.ikea.com/se/sv/p/jaemlik-doftljus-i-glas-vanilj-ljusbeige-70502178/", "priceKnown": true, "image": "https://www.ikea.com/se/sv/images/products/jaemlik-doftljus-i-glas-vanilj-ljusbeige__1060475_pe850035_s5.jpg"},
+  halsduk: {"name": "Triangelscarf i kashmir", "brand": "ARKET", "store": "ARKET", "price": 990, "url": "https://www.arket.com/sv-se/product/cashmere-scarf-black-1357104001/", "priceKnown": true, "image": halsdukImage},
+  glas: {"name": "FJÄLLUGGLA glas, 4-pack", "brand": "IKEA", "store": "IKEA", "price": 149, "url": "https://www.ikea.com/se/sv/p/fjaelluggla-champagneglas-klarglas-10628722/", "priceKnown": true, "image": "https://www.ikea.com/se/sv/images/products/fjaelluggla-champagneglas-klarglas__1560826_pe1025478_s5.jpg"},
+  parfym: {"name": "Light Blue EdT, 25 ml", "brand": "Dolce & Gabbana", "store": "Lyko", "price": 0, "url": "https://lyko.com/sv/dolce-gabbana/dolce--gabbana-light-blue-eau-de-toilette-25ml", "priceKnown": false, "image": "https://lyko.com/globalassets/product-images/dolce--gabbana-light-blue-eau-de-toilette-25ml-1024-309-0025_1.jpg?ref=50B956BC92&w=768&h=1872&quality=75"},
+  vas: {"name": "POMP glasvas, 18 cm", "brand": "IKEA", "store": "IKEA", "price": 49, "url": "https://www.ikea.com/se/sv/p/pomp-vas-lykta-klarglas-80326537/", "priceKnown": true, "image": "https://www.ikea.com/se/sv/images/products/pomp-vas-lykta-klarglas__0637228_pe698184_s5.jpg"},
+  resvaska: {"name": "Soundbox kabinväska, 55 cm", "brand": "American Tourister", "store": "Booztlet", "price": 1274.25, "url": "https://www.booztlet.com/se/sv/american-tourister/soundbox-spinner-67-24-tsa-exp_32831507", "priceKnown": true, "image": "https://image-resizing.booztcdn.com/american-tourister/eri88474_cbassblack_10.webp?has_webp=1&version=d9ab25c04bd3f69a1812b14ef9246468&size=w400"},
+  solglas: {"name": "Original Wayfarer Classic", "brand": "Ray-Ban", "store": "Ray-Ban", "price": 0, "url": "https://www.ray-ban.com/sweden/sunglasses/RB2140original%20wayfarer%20classic-svart/805289126591", "priceKnown": false, "image": "https://images2.ray-ban.com//prod-onecp-record-files/pieyewear/36cb74ca-5fcd-4f57-9cd8-b35d00c6bc94/0RB2140__901_58__STD__shad__qt.png?impolicy=RB_RB_FBShare"},
+  skalar: {"name": "FÄRGKLAR skålar, 4-pack", "brand": "IKEA", "store": "IKEA", "price": 100, "url": "https://www.ikea.com/se/sv/p/faergklar-skal-ljusbla-10600426/", "priceKnown": true, "image": "https://www.ikea.com/se/sv/images/products/faergklar-skal-ljusbla__1358950_pe953998_s5.jpg"},
+  kaffe: {"name": "Manual S kaffebryggare", "brand": "Moccamaster", "store": "Elgiganten", "price": 2499, "url": "https://www.elgiganten.se/product/hem-hushall-tradgard/kaffemaskiner-te/kaffebryggare/moccamaster-kaffebryggare-53721/614058", "priceKnown": true, "image": "https://www.elgiganten.se/image/dv_web_D1800012699088/614058/moccamaster-kaffebryggare-53721.jpg"},
+  smink: {"name": "Lifter Gloss 007 Amber", "brand": "Maybelline", "store": "Lyko", "price": 0, "url": "https://lyko.com/sv/maybelline-new-york/maybelline-lifter-gloss-amber-7", "priceKnown": false, "image": "https://lyko.com/globalassets/product-images/maybelline-new-york-lifter-gloss-hydrating-lip-gloss-with-hyaluronic-acid-007-amber-54-ml-1200-414-0007_1.jpg?ref=1C3F815CE6&w=1200&h=2073&quality=75"},
+  hudvard: {"name": "Ascorbyl Glucoside 12%, 30 ml", "brand": "The Ordinary", "store": "Lyko", "price": 191, "url": "https://lyko.com/sv/the-ordinary/the-ordinary-ascorbyl-glucoside-solution-12--30ml", "priceKnown": true, "image": "https://lyko.com/globalassets/product-images/the-ordinary-ascorbyl-glucoside-solution-12-30ml-2328-143-0030_1.jpg?ref=F966FEDA45&w=1036&h=3132&quality=75"},
+  harvard: {"name": "Elvital Hyaluron Pure, 250 ml", "brand": "L’Oréal Paris", "store": "Lyko", "price": 0, "url": "https://lyko.com/sv/loreal-paris/l-or-al-paris-elvital-hyaluron-pure--purifying-shampoo-250-ml", "priceKnown": false, "image": "https://lyko.com/globalassets/product-images/loreal-paris-elvital-hyaluron-pure-shampoo-250-ml-1185-a50-0400_1.jpg?ref=08D84739BA&w=1144&h=2920&quality=75"},
+  yogamatta: {"name": "4 mm yogamatta, Astro Dust", "brand": "Reebok", "store": "CDON", "price": 275, "url": "https://cdon.se/produkt/reebok-4mm-yogamatta-astro-dust-29913e70526a5263/", "priceKnown": true, "image": "https://cdn.cdon.com/media-dynamic/images/product/cloud/store/YogaPilatesMats/000/173/114/328/173114328-306852163-11453-org.jpg?cache=133694136527219876&imWidth=600"},
+  adventsljusstake: {"name": "STRÅLA LED-ljusstake, röd", "brand": "IKEA", "store": "IKEA", "price": 349, "url": "https://www.ikea.com/se/sv/p/strala-led-ljusstake-trae-loev-roed-50633566/", "priceKnown": true, "image": "https://www.ikea.com/se/sv/images/products/strala-led-ljusstake-trae-loev-roed__1508419_pe1009518_s5.jpg"},
+  bok: {"name": "Polcirkeln (pocket)", "brand": "Liza Marklund", "store": "Bokus", "price": 89, "url": "https://www.bokus.com/bok/9789164207821/polcirkeln", "priceKnown": true, "image": "https://image.bokus.com/images2/9789164207821_766"},
+  blomkruka: {"name": "Kruka Rudy, Ø25 cm", "brand": "Plantagen", "store": "Plantagen", "price": 0, "url": "https://plantagen.se/se/p/kruka-rudy-o25-cm-terrakotta-9c702-9d2f2-5a1c3-b141e-542907", "priceKnown": false, "image": "https://media.crystallize.com/pltn/24/9/21/18089/359_8fa49a6c-7891-43ad-b2bd-5bb527ff07f8.jpg"},
+  powerbank: {"name": "PowerCore 10K powerbank", "brand": "Anker", "store": "CDON", "price": 0, "url": "https://cdon.se/produkt/anker-powercore-10k-powerbank-10000-mah-usb-c-poweriq-svart-16766960f6845aff/", "priceKnown": false, "image": "https://images.cdon.com/images/f_auto/t_600x600/cdon-prod/1abb60c6792e4e59/5c9b047d9021/anker-powercore-10k-powerbank-10000-mah-usbc-poweriq-svart"},
+  solkram: {"name": "Sun Hydrating Sun Face Cream SPF50, 40 ml", "brand": "ACO", "store": "Apoteket", "price": 199, "url": "https://www.apoteket.se/produkt/aco-sun-hydrating-sun-face-cre-40-ml-tub-1579632/", "priceKnown": true, "image": "https://www.apoteket.se/produktbilder/Validoo/B06639m.jpg"},
+  airfryer: {"name": "3000 Series Dual Basket NA352/00", "brand": "Philips", "store": "Power", "price": 0, "url": "https://www.power.se/koksapparater/stekning-och-kokning/airfryers-och-fritoser/airfryers/philips-3000-series-dual-basket-na35200-airfryer/p-3111517/", "priceKnown": false, "image": "https://media.power-cdn.net/images/h-aaf722307152ad4f2edc0472acde296a/products/3111517/3111517_11_1200x1200_w_g.jpg"},
+  kuddfodral: {"name": "Harriet kuddfodral, 50x50 cm", "brand": "Svanefors", "store": "Åhléns", "price": 479, "url": "https://www.ahlens.se/produkter/inredning/harriet-kuddfodral-62805486-b082-48a0-a46c-8176c0afacd6", "priceKnown": true, "image": "https://media.ahlens.se/image/upload/f_auto,t_ProductListMobile/products/bg_removed/02/b6/77/02b67700682448fe9139665b9084415d_86a156e390b44bec8a3b2c393c177b4a_front.jpg"},
+  karaff: {"name": "Karaff Krås, 1 liter", "brand": "Created by Designtorget", "store": "Designtorget", "price": 0, "url": "https://designtorget.se/karaff-kras-1-liter/", "priceKnown": false, "image": "https://designtorget.se/image/16634/karaffkras1liter1.jpg"},
+  festklanning: {"name": "Chiffon dress", "brand": "Gina Tricot", "store": "Gina Tricot", "price": 0, "url": "https://www.ginatricot.com/se/klader/klanningarjumpsuits/langarmade-klanningar/chiffon-dress-286741039", "priceKnown": false, "image": "https://ginatricot-pim.imgix.net/286741039/28674103901.jpg"},
+  ansiktskram: {"name": "Natural Moisturizing Factors + HA, 100 ml", "brand": "The Ordinary", "store": "KICKS", "price": 185, "url": "https://www.kicks.se/the-ordinary-natural-moisturizing-factors-ha-100-ml", "priceKnown": true, "image": "https://images.matas.dk/encode/769915195934_20260730180431.jpg"},
 };
 
 export const LEGACY_PRODUCT_KEYS: Record<string, string> = {
@@ -39,4 +43,7 @@ export const LEGACY_PRODUCT_KEYS: Record<string, string> = {
   "Doftljus": "ljus", "Kashmirhalsduk": "halsduk", "Champagneglas": "glas", "Parfym": "parfym",
   "Keramikvas": "vas", "Resväska": "resvaska", "Solglasögon": "solglas", "Keramikskålar": "skalar",
   "Kaffebryggare": "kaffe", "Läppstift & rouge": "smink", "C-vitaminserum": "hudvard", "Schampo": "harvard",
+  "Yogamatta": "yogamatta", "Adventsljusstake": "adventsljusstake", "Pocketbok": "bok", "Blomkruka": "blomkruka",
+  "Powerbank": "powerbank", "Solkräm": "solkram", "Airfryer": "airfryer", "Kuddfodral": "kuddfodral",
+  "Glaskaraff": "karaff", "Festklänning": "festklanning", "Ansiktskräm": "ansiktskram",
 };
