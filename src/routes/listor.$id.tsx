@@ -189,7 +189,7 @@ function ItemDetail({ item, listId, onClose }: { item: Item; listId: string; onC
   const [searchMsg, setSearchMsg] = useState("");
   const search = async () => {
     setSearching(true); setSearchMsg("");
-    const r = await findOtherStores({ data: { name: item.name, brand: item.brand, url: item.url } }).catch(() => ({ ok: false as const, error: "Sökningen misslyckades" }));
+    const r = await findOtherStores({ data: { name: item.name, brand: item.brand, url: item.url, price: item.priceKnown === false ? 0 : item.price } }).catch(() => ({ ok: false as const, error: "Sökningen misslyckades" }));
     setSearching(false);
     if (!r.ok) return setSearchMsg(r.error);
     if (r.offers.length === 0) return setSearchMsg("Hittade inga andra butiker med samma produkt just nu.");
