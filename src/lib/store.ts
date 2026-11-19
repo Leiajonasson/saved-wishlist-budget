@@ -83,6 +83,10 @@ const STORE_URLS: Record<string, string> = {
   Ellos: "https://www.ellos.se",
 };
 export const storeUrl = (store: string) => STORE_URLS[store] ?? `https://www.google.com/search?q=${encodeURIComponent(store)}`;
+export const storeLogo = (store: string) => {
+  const domain = (STORE_URLS[store] ? new URL(STORE_URLS[store]).hostname : `${store.toLowerCase().replace(/\s+/g, "")}.se`);
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+};
 
 const offersFor = (p: number): Offer[] => [
   { store: "Zalando", price: Math.round(p * 0.87) },

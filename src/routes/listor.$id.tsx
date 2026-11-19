@@ -4,7 +4,7 @@ import { useState } from "react";
 import * as D from "@radix-ui/react-dialog";
 import { Shell } from "@/components/Shell";
 import { ThemePicker } from "@/components/ThemePicker";
-import { actions, useStore, type Item, budgetSummary, monthKey, storeUrl } from "@/lib/store";
+import { actions, useStore, type Item, budgetSummary, monthKey, storeUrl, storeLogo } from "@/lib/store";
 import { fetchProductInfo } from "@/lib/product.functions";
 
 export const Route = createFileRoute("/listor/$id")({
@@ -204,7 +204,9 @@ function ItemDetail({ item, listId, onClose }: { item: Item; listId: string; onC
           {item.offers.map((o) => (
             <a key={o.store} href={storeUrl(o.store)} target="_blank" rel="noreferrer"
               className="flex items-center justify-between rounded-lg bg-chip px-3 py-2 font-serif text-lg transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
-              <span className="flex items-center gap-1.5">{o.store}
+              <span className="flex items-center gap-2">
+                <img src={storeLogo(o.store)} alt="" className="h-5 w-5 rounded-sm" />
+                {o.store}
                 <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
                 {o === cheapest && <span className="ml-1 font-sans text-xs font-semibold text-primary">Billigast</span>}
               </span>
