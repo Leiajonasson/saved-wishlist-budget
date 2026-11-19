@@ -1,9 +1,9 @@
 // Product pages and images verified on 2026-11-19. Prices are snapshots, not live comparisons.
 // Images are the stores' own product photos, hotlinked from each product page.
 // ARKET and Komplett block hotlinking, so those photos are bundled locally instead.
-import trojaImage from "@/assets/real-troja.jpg";
-import halsdukImage from "@/assets/real-halsduk.jpg";
-import horlurarImage from "@/assets/real-horlurar.avif";
+const trojaImage = "/produkter/real-troja.jpg";
+const halsdukImage = "/produkter/real-halsduk.jpg";
+const horlurarImage = "/produkter/real-horlurar.avif";
 export type CatalogProduct = {
   name: string; brand: string; store: string; price: number; priceKnown: boolean;
   url: string; image?: string;
